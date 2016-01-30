@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Plane Viewer</title>
+</head>
+<body>
+    <h1>
+        There's gonna be a test plane here soon!
+    </h1>
+    <h3>
+        {% if aircraft %}
+            {% for type in aircraft %}
+                {{ type.aircraft }}
+            {% endfor %}
+        {% else %}
+            No aircraft found
+        {% endif %}
+    </h3>
+</body>
+</html>
