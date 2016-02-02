@@ -11,14 +11,17 @@
     <title>Title</title>
     {% csrf_token %}
     <ul class="aircraft_input">
-        {% static image_location %}
         <br>
-        <img src="{%  static "PlaneViewer/Test.jpg" %}" height=200/>
-        <br>
-        <img src="{{ image_location }}"/>
-        {{ form.as_ul }}
+        <img src="{% static image_location %}" width="500px"/>
+        <form>
+            {{ form.as_ul }}
+            <input type="submit" value="Submit">
+        </form>
         {{ redownload }}
     </ul>
+    {% if plane_data %}
+
+    {% endif %}
 
 </head>
 <body>

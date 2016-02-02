@@ -1,6 +1,30 @@
 from django.db import models
 
 
+class Types(models.Model):
+    aircraft_type_id = models.IntegerField()
+    aircraft_type = models.CharField(max_length=100)
+
+    def _str__(self):
+        return self.aircraft_type
+
+    class Meta:
+        ordering = ('aircraft_type_id',)
+        db_table = 'types'
+
+
+class AircraftType(models.Model):
+    aircraft_name = models.CharField(max_length=100)
+    aircraft_type_id = models.ForeignKey(Types)
+
+    def data(self):
+        return {'name': self.aircraft_name,
+                'id': self.type_id}
+
+    def __str__(self):
+        return self.type_id
+
+
 class Aircraft(models.Model):
     image_page = models.CharField(max_length=200, primary_key=True)
     image_url = models.CharField(max_length=200)
@@ -10,7 +34,7 @@ class Aircraft(models.Model):
     location = models.CharField(max_length=200)
     author = models.CharField(max_length=100)
     aircraft = models.CharField(max_length=100)
-    aircraft_type = models.CharField(max_length=50)
+    aircraft_type = models.CharField(max_length=100)
     redownload_flag = models.BooleanField()
 
     def data(self):
@@ -29,6 +53,5 @@ class Aircraft(models.Model):
         return self.name
 
     class Meta:
-        managed = False
         ordering = ('aircraft',)
         db_table = 'images'

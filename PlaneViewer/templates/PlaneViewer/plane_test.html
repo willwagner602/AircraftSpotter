@@ -3,19 +3,37 @@
 <head>
     <meta charset="UTF-8">
     <title>Plane Viewer</title>
+    {% load staticfiles %}
+    <!--Import Google Icon Font-->
+    <link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <!--Import materialize.css-->
+    <link type="text/css" rel="stylesheet" href={% static "PlaneViewer/materialize/css/materialize.min.css" %}  media="screen,projection"/>
+
+    <!--Let browser know website is optimized for mobile-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 </head>
+
 <body>
-    <h1>
-        There's gonna be a test plane here soon!
-    </h1>
     <h3>
-        {% if aircraft %}
-            {% for type in aircraft %}
-                {{ type.aircraft }}
-            {% endfor %}
-        {% else %}
-            No aircraft found
-        {% endif %}
+        <div class="container">
+            <div class="row">
+            </div>
+            <div class="row">
+                <div class="col s8 offset-s2">
+                    <h1>{{ aircraft }}</h1>
+                    <img class="materialboxed" id="plane_image" box-shadow="10px 10px" width="100%" alignment="center" src="{% static location %}">
+                    <h6> Photo credit {{ author }}</h6>
+                </div>
+            </div>
+        </div>
     </h3>
 </body>
+
+
+<footer>
+    <!--Import jQuery before materialize.js-->
+    <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+    <script type="text/javascript" src={% static "PlaneViewer/materialize/js/materialize.min.js" %}></script>
+</footer>
+
 </html>

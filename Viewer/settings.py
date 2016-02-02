@@ -79,7 +79,7 @@ WSGI_APPLICATION = 'Viewer.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'images.sqlite3'),
+        'NAME': os.path.join(BASE_DIR, 'planes.sqlite3'),
     }
 }
 
