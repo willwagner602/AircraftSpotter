@@ -2,39 +2,44 @@ from django.db import models
 
 
 class Types(models.Model):
-    aircraft_type_id = models.IntegerField()
+    type_id = models.IntegerField()
     aircraft_type = models.CharField(max_length=100)
 
     def _str__(self):
         return self.aircraft_type
 
     class Meta:
-        ordering = ('aircraft_type_id',)
+        ordering = ('type_id',)
         db_table = 'types'
+        managed = False
 
 
 class AircraftType(models.Model):
     aircraft_name = models.CharField(max_length=100)
-    aircraft_type_id = models.ForeignKey(Types)
+    type_int = models.IntegerField()
 
     def data(self):
         return {'name': self.aircraft_name,
-                'id': self.type_id}
+                'type_int': self.type_int}
 
     def __str__(self):
-        return self.type_id
+        return self.aircraft_name
+
+    class Meta:
+        db_table = 'aircraft_type'
+        managed = False
 
 
 class Aircraft(models.Model):
     image_page = models.CharField(max_length=200, primary_key=True)
     image_url = models.CharField(max_length=200)
     name = models.CharField(max_length=100)
-    image_license = models.CharField(max_length=100)
+    image_license = models.CharField(max_length=100, null=True, blank=True)
     license_text = models.CharField(max_length=1000)
-    location = models.CharField(max_length=200)
-    author = models.CharField(max_length=100)
-    aircraft = models.CharField(max_length=100)
-    aircraft_type = models.CharField(max_length=100)
+    location = models.CharField(max_length=200, null=True, blank=True)
+    author = models.CharField(max_length=100, null=True, blank=True)
+    aircraft = models.CharField(max_length=100, null=True, blank=True)
+    aircraft_type = models.CharField(max_length=100, null=True, blank=True)
     redownload_flag = models.BooleanField()
 
     def data(self):
@@ -55,3 +60,4 @@ class Aircraft(models.Model):
     class Meta:
         ordering = ('aircraft',)
         db_table = 'images'
+        managed = False

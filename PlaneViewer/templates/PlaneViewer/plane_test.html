@@ -14,19 +14,35 @@
 </head>
 
 <body>
-    <h3>
         <div class="container">
             <div class="row">
             </div>
             <div class="row">
-                <div class="col s8 offset-s2">
+                <div class="col s8 offset-s2 m">
                     <h1>{{ aircraft }}</h1>
                     <img class="materialboxed" id="plane_image" box-shadow="10px 10px" width="100%" alignment="center" src="{% static location %}">
                     <h6> Photo credit {{ author }}</h6>
                 </div>
             </div>
         </div>
-    </h3>
+        <div class="container">
+            <div class="row">
+                <div class="col s3 offset-s3">
+                    {% for choice in left_selections %}
+                        <p>
+                            <a class="waves-effect waves-light btn">{{ choice }}</a>
+                        </p>
+                    {% endfor %}
+                </div>
+                <div class="col s3">
+                    {% for choice in right_selections %}
+                        <p>
+                            <a class="waves-effect waves-light btn">{{ choice }}</a>
+                        </p>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
 </body>
 
 
