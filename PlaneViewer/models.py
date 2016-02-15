@@ -41,6 +41,8 @@ class Aircraft(models.Model):
     aircraft = models.CharField(max_length=100, null=True, blank=True)
     aircraft_type = models.CharField(max_length=100, null=True, blank=True)
     redownload_flag = models.BooleanField()
+    use_flag = models.BooleanField()
+    description = models.CharField(max_length=1000, null=True, blank=True)
 
     def data(self):
         return {"image_page": self.image_page,
@@ -52,7 +54,9 @@ class Aircraft(models.Model):
                 "author": self.author,
                 "aircraft": self.aircraft,
                 "aircraft_type": self.aircraft_type,
-                "redownload_flag": self.redownload_flag}
+                "redownload_flag": self.redownload_flag,
+                "description": self.description,
+                "use_flag": self.use_flag,}
 
     def __str__(self):
         return self.name

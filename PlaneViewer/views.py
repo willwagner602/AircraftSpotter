@@ -6,7 +6,13 @@ from random import shuffle
 
 def aircraft_display(request):
     # get the individual plane for display, and the necessary data to display it
-    plane = Aircraft.objects.filter(aircraft__isnull=False)
+    current_choices = ["Ilyushin Il-86",
+"Ilyushin Il-96",
+"Lockheed L-1011 TriStar",
+"McDonnell Douglas DC-10",
+"McDonnell Douglas MD-11"]
+
+    plane = Aircraft.objects.filter(aircraft__in=current_choices)
     plane = plane.filter(redownload_flag__exact=0).order_by('?').first()
     plane_file = 'PlaneViewer/images/' + plane.location + '/' + plane.name
 
@@ -14,19 +20,26 @@ def aircraft_display(request):
     plane_model = plane.aircraft
     type_int = AircraftType.objects.filter(aircraft_name=plane_model).first().type_int
 
-    # get selection for multiple choice options - must include the correct aircraft
+    # get selection for multiple choice options
     selection_options = AircraftType.objects.filter(type_int__exact=type_int).order_by('?').all()
-    selection_options = selection_options.exclude(aircraft_name__in=plane_model)[:5]
-    selection_options = [str(plane) for plane in selection_options]
+
+    # exclude the correct answer
+    selection_options = selection_options.exclude(aircraft_name__exact=plane_model)
+
+    # get 5 aircraft names and create a list of them, then add the correct answer
+    selection_options = [str(plane) for plane in selection_options[:5]]
     selection_options.append(plane_model)
+
+    # randomize the selection and create the left and right lists for the final page
     shuffle(selection_options)
     left_selections = selection_options[:3]
     right_selections = selection_options[3:]
 
     return render(request, 'PlaneViewer/plane_test.html', {'left_selections': left_selections,
                                                            "right_selections": right_selections,
+                                                           'selections': selection_options,
                                                            'location': plane_file, 'author': plane.author,
-                                                           'aircraft': plane.aircraft
+                                                           'aircraft': plane.aircraft,
                                                            })
 
 
