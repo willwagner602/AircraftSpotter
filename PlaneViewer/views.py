@@ -2,12 +2,13 @@ from random import shuffle
 
 from django.shortcuts import render, HttpResponseRedirect
 from django.contrib.auth.models import User
+from django.contrib.staticfiles.templatetags.staticfiles import static
 
 from .models import Aircraft, AircraftType
 from .forms import AircraftForm
 
 
-def aircraft_display(request):
+def aircraft_test(request):
     if request.method == 'POST':
         # get the plane's id and the guess
         print(request.POST)
@@ -44,10 +45,11 @@ def aircraft_display(request):
     right_selections = selection_options[3:]
 
     return render(request, 'PlaneViewer/aircraft_test.html', {'left_selections': left_selections,
-                                                           'right_selections': right_selections,
-                                                           'selections': selection_options,
-                                                           'location': plane_file, 'author': plane.author,
-                                                           'aircraft': plane.aircraft,
+                                                              'right_selections': right_selections,
+                                                              'selections': selection_options,
+                                                              'location': static(plane_file),
+                                                              'author': plane.author,
+                                                              'aircraft': plane.aircraft,
                                                               })
 
 
