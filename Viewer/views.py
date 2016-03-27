@@ -11,11 +11,13 @@ def create_user(request):
         password = user_info['password']
         password_confirmation = user_info['password_confirmation']
 
+        print(user_info)
+
         if password != password_confirmation:
             # return error
             return render(request, 'registration/create_user.html', {'error': 'passwords do not match'})
 
-        user = User.objects.create_user(username, password=password)
+        user = User.objects.create_user(username, email=username, password=password)
 
         return render(request, 'registration/login.html', {'success': 'User created successfully!'})
 

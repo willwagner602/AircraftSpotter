@@ -66,3 +66,8 @@ class Aircraft(models.Model):
         ordering = ('aircraft',)
         db_table = 'images'
         managed = False
+
+
+class ErrorReport(models.Model):
+    error_id = models.IntegerField()
+    image_id = models.ForeignKey(Aircraft)

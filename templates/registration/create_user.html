@@ -1,13 +1,5 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends "PlaneViewer/plane_viewer.html" %}
 
-{% extends "plane_viewer.html" %}
-
-<head>
-
-</head>
-
-<body>
     {% block content %}
         <div class="container">
             <div class="row">
@@ -46,13 +38,3 @@
             </form>
         </div>
     {% endblock %}
-</body>
-
-
-<footer>
-    <!--Import jQuery before materialize.js-->
-    <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
-    <script type="text/javascript" src={% static "PlaneViewer/materialize/js/materialize.min.js" %}></script>
-</footer>
-
-</html>

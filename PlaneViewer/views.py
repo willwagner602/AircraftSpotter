@@ -9,11 +9,7 @@ from .forms import AircraftForm
 
 
 def aircraft_test(request):
-    if request.method == 'POST':
-        # get the plane's id and the guess
-        print(request.POST)
-        # return a message about whether the guess was accurate
-        pass
+
     # get the individual plane for display, and the necessary data to display it
     current_choices = ["Ilyushin Il-86",
                        "Ilyushin Il-96",
@@ -21,7 +17,7 @@ def aircraft_test(request):
                        "McDonnell Douglas DC-10",
                        "McDonnell Douglas MD-11"]
 
-    plane = Aircraft.objects.filter(aircraft__in=current_choices)
+    plane = Aircraft.objects.filter(aircraft__isnull=False)
     plane = plane.filter(redownload_flag__exact=0).order_by('?').first()
     plane_file = 'PlaneViewer/images/' + plane.location + '/' + plane.name
 
@@ -44,13 +40,29 @@ def aircraft_test(request):
     left_selections = selection_options[:3]
     right_selections = selection_options[3:]
 
-    return render(request, 'PlaneViewer/aircraft_test.html', {'left_selections': left_selections,
-                                                              'right_selections': right_selections,
-                                                              'selections': selection_options,
-                                                              'location': static(plane_file),
-                                                              'author': plane.author,
-                                                              'aircraft': plane.aircraft,
-                                                              })
+    page_vars = {'left_selections': left_selections,
+                 'right_selections': right_selections,
+                 'selections': selection_options,
+                 'location': static(plane_file),
+                 'author': plane.author,
+                 'aircraft_id': plane.image_id,
+                 }
+
+    if request.method == 'POST':
+        # get the plane's id and the guess
+        current_plane = Aircraft.objects.get(image_id=request.POST['aircraft_id'])
+        current_type = current_plane.aircraft
+        if current_type == request.POST['answer']:
+            page_vars['success'] = "Success!"
+        else:
+            page_vars['success'] = "Wrong! That plane was a " + current_type
+
+        print(request.POST)
+
+        # return a message about whether the guess was accurate
+
+
+    return render(request, 'PlaneViewer/aircraft_test.html', page_vars)
 
 
 def data_manager(request):

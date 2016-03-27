@@ -18,12 +18,14 @@
     {% block navbar %}
         <div class="navbar-fixed">
             <nav>
-                <div class="nav-wrapper">
+                <div class="nav-wrapper blue white-text">
                     <div class="container">
                         <div class="row">
                             <div class="col" style="position:absolute; left: 20px;">
                                  {% if request.user.is_authenticated %}
                                     {{ request.user.username }}
+                                 {% else %}
+                                     <a href="/user/create_user">Register</a>
                                  {% endif %}
                             </div>
                             <div class="col" style="position:absolute; right: 20px;">

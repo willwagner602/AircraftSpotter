@@ -21,6 +21,6 @@ from . import views
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
     url(r'', include('PlaneViewer.urls')),
+    url(r'^user/create_user$', views.create_user, name="create_user"),
     url(r'^user/', include('django.contrib.auth.urls')),
-    url(r'^create_user$', views.create_user, name="create_user"),
 ]
