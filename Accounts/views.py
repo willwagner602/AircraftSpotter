@@ -1,6 +1,6 @@
 __author__ = 'wbw'
 
-from django.shortcuts import render, HttpResponseRedirect
+from django.shortcuts import render
 from django.contrib.auth.models import User
 
 

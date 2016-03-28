@@ -15,12 +15,9 @@ Including another URLconf
 """
 from django.conf.urls import include, url
 from django.contrib import admin
-from django.contrib.auth import views as auth_views
-from . import views
 
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
-    url(r'', include('PlaneViewer.urls')),
-    url(r'^user/create_user$', views.create_user, name="create_user"),
-    url(r'^user/', include('django.contrib.auth.urls')),
+    url(r'', include('PlaneTest.urls')),
+    url(r'^user/', include('Accounts.urls')),
 ]

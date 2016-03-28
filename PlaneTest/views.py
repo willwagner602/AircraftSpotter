@@ -19,7 +19,7 @@ def aircraft_test(request):
 
     plane = Aircraft.objects.filter(redownload_flag__exact=0, aircraft_type__isnull=False).order_by('?').first()
     print(Aircraft.objects.filter(redownload_flag__exact=0, aircraft_type__isnull=False).order_by('?'))
-    plane_file = 'PlaneViewer/images/' + plane.location + '/' + plane.name
+    plane_file = 'PlaneTest/images/' + plane.location + '/' + plane.name
 
     # get information necessary to identify similar planes for challenging multiple choice options
     plane_model = plane.aircraft
@@ -83,7 +83,7 @@ def data_manager(request):
     if request.method == 'POST':
         data = Aircraft.objects.get(pk=request.POST['image_page'])
         plane = AircraftForm(request.POST, instance=data)
-        location = 'PlaneViewer/images/' + data.location + '/' + data.name
+        location = 'PlaneTest/images/' + data.location + '/' + data.name
         if plane.is_valid():
             # return the updated form instance of the same plane they were just looking at
             plane = plane.save()
@@ -98,7 +98,7 @@ def data_manager(request):
     else:
         data = Aircraft.objects.filter(aircraft__isnull=True).filter(
                 redownload_flag__exact=0).order_by('?').first()
-        location = 'PlaneViewer/images/' + data.location + '/' + data.name
+        location = 'PlaneTest/images/' + data.location + '/' + data.name
         redownload = data.redownload_flag
         form = AircraftForm(initial=data.data())
 
