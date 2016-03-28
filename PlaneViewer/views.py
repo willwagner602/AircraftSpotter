@@ -17,13 +17,13 @@ def aircraft_test(request):
                        "McDonnell Douglas DC-10",
                        "McDonnell Douglas MD-11"]
 
-    plane = Aircraft.objects.filter(aircraft__isnull=False)
-    plane = plane.filter(redownload_flag__exact=0).order_by('?').first()
+    plane = Aircraft.objects.filter(redownload_flag__exact=0, aircraft_type__isnull=False).order_by('?').first()
+    print(Aircraft.objects.filter(redownload_flag__exact=0, aircraft_type__isnull=False).order_by('?'))
     plane_file = 'PlaneViewer/images/' + plane.location + '/' + plane.name
 
     # get information necessary to identify similar planes for challenging multiple choice options
     plane_model = plane.aircraft
-    type_int = AircraftType.objects.filter(aircraft_name=plane_model).first().type_int
+    type_int = AircraftType.objects.get(aircraft_name=plane_model).type_int
 
     # get selection for multiple choice options
     selection_options = AircraftType.objects.filter(type_int__exact=type_int).order_by('?').all()
@@ -61,8 +61,22 @@ def aircraft_test(request):
 
         # return a message about whether the guess was accurate
 
-
     return render(request, 'PlaneViewer/aircraft_test.html', page_vars)
+
+
+def error_report(request):
+
+    if request.method == 'POST':
+        pass
+
+        # store the error report, return to page with success and the error data
+
+    # if the user is an admin, serve them the data page
+    if request.user.is_superuser:
+        return data_manager(request)
+    # if the user is a regular user, serve them the error page
+    else:
+        return render(request, 'PlaneViewer/error_report.html', {})
 
 
 def data_manager(request):
@@ -89,11 +103,3 @@ def data_manager(request):
         form = AircraftForm(initial=data.data())
 
     return render(request, 'PlaneViewer/aircraft_data.html', {'form': form, 'image_location': location})
-
-
-def user(request):
-    if request.method == 'POST':
-        pass
-    else:
-        user = User.objects
-    return render(request, 'PlaneViewer/aircraft_user.html', {})
