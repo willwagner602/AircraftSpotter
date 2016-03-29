@@ -5,21 +5,15 @@ from django.contrib.auth.models import User
 from django.contrib.staticfiles.templatetags.staticfiles import static
 
 from .models import Aircraft, AircraftType
-from .forms import AircraftForm
+from .forms import AircraftForm, ErrorForm
 
 
 def aircraft_test(request):
 
     # get the individual plane for display, and the necessary data to display it
-    current_choices = ["Ilyushin Il-86",
-                       "Ilyushin Il-96",
-                       "Lockheed L-1011 TriStar",
-                       "McDonnell Douglas DC-10",
-                       "McDonnell Douglas MD-11"]
-
     plane = Aircraft.objects.filter(redownload_flag__exact=0, aircraft_type__isnull=False).order_by('?').first()
     print(Aircraft.objects.filter(redownload_flag__exact=0, aircraft_type__isnull=False).order_by('?'))
-    plane_file = 'PlaneTest/images/' + plane.location + '/' + plane.name
+    image_location = static('PlaneTest/images/' + plane.location + '/' + plane.name)
 
     # get information necessary to identify similar planes for challenging multiple choice options
     plane_model = plane.aircraft
@@ -43,9 +37,10 @@ def aircraft_test(request):
     page_vars = {'left_selections': left_selections,
                  'right_selections': right_selections,
                  'selections': selection_options,
-                 'location': static(plane_file),
+                 'location': image_location,
                  'author': plane.author,
                  'aircraft_id': plane.image_id,
+                 'error_url': 'error_report/' + str(plane.image_id)
                  }
 
     if request.method == 'POST':
@@ -64,26 +59,35 @@ def aircraft_test(request):
     return render(request, 'PlaneViewer/aircraft_test.html', page_vars)
 
 
-def error_report(request):
+def error_report(request, current_image_id):
 
     if request.method == 'POST':
         pass
 
         # store the error report, return to page with success and the error data
 
+
+
     # if the user is an admin, serve them the data page
     if request.user.is_superuser:
-        return data_manager(request)
+        return data_manager(request, current_image_id)
     # if the user is a regular user, serve them the error page
     else:
-        return render(request, 'PlaneViewer/error_report.html', {})
+        plane = Aircraft.objects.get(image_id=current_image_id)
+        image_location = static('PlaneTest/images/' + plane.location + '/' + plane.name)
+        form = ErrorForm()
+        return render(request, 'PlaneViewer/error_report.html', {'image_id': current_image_id,
+                                                                 'image_location': image_location,
+                                                                 'plane': plane.aircraft,
+                                                                 'form': form,
+                                                                 'error_url': 'error_report/' + str(plane.image_id)})
 
 
-def data_manager(request):
+def data_manager(request, current_image_id):
     if request.method == 'POST':
         data = Aircraft.objects.get(pk=request.POST['image_page'])
         plane = AircraftForm(request.POST, instance=data)
-        location = 'PlaneTest/images/' + data.location + '/' + data.name
+        location = static('PlaneTest/images/' + data.location + '/' + data.name)
         if plane.is_valid():
             # return the updated form instance of the same plane they were just looking at
             plane = plane.save()
@@ -96,9 +100,8 @@ def data_manager(request):
                                                                      'success': 'Plane not saved.'})
 
     else:
-        data = Aircraft.objects.filter(aircraft__isnull=True).filter(
-                redownload_flag__exact=0).order_by('?').first()
-        location = 'PlaneTest/images/' + data.location + '/' + data.name
+        data = Aircraft.objects.get(image_id=current_image_id)
+        location = static('PlaneTest/images/' + data.location + '/' + data.name)
         redownload = data.redownload_flag
         form = AircraftForm(initial=data.data())
 

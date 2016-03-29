@@ -1,44 +1,31 @@
-<!DOCTYPE html>
-<html lang="en">
-    <head>
+{% extends 'PlaneViewer/plane_viewer.html' %}
 
-    {% load staticfiles %}
+    {% block title %}
+        <title>Data Manager</title>
+    {% endblock %}
 
-    <link rel="stylesheet" src="{% static "PlaneTest/materialize/css/materialize.css" %}"/>
-    <link rel="stylesheet" src="{% static "PlaneTest/get_aircraft.css" %}"/>
-
-    <meta charset="UTF-8">
-    <title>Aircraft Data Tool</title>
-    {% csrf_token %}
-    </head>
-    <body>
-         <ul class="aircraft_input">
-            {% if success %}
-                <h3>{{ success }}</h3>
-            {% endif %}
-            <br>
-            <img src="{% static image_location %}" width="500px"/>
-            <form action="/data" method="post">
-                {% csrf_token %}
-                {% if form %}
-                    {{ form.as_ul }}
-                {% else %}
-                    Form not found.
+    {% block content %}
+        <div class="container">
+            <ul class="aircraft_input">
+                {% if success %}
+                    <h3>{{ success }}</h3>
                 {% endif %}
-                <input type="submit" value="Submit">
-            </form>
-            <br>
-            <br>
-            <form action="/data" method="get">
-                <input type="submit" value="Get Another Aircraft">
-            </form>
-        </ul>
-
-        <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
-        <script type="text/javascript" src="js/materialize.min.js"></script>
-    </body>
-
-    <footer>
-
-    </footer>
-</html>
+                <br>
+                <img src="{{ image_location }}" width="50%"/>
+                <form action="/data" method="post">
+                    {% csrf_token %}
+                    {% if form %}
+                        {{ form.as_ul }}
+                    {% else %}
+                        Form not found.
+                    {% endif %}
+                    <input type="submit" value="Submit">
+                </form>
+                <br>
+                <br>
+                <form action="/data" method="get">
+                    <input type="submit" value="Get Another Aircraft">
+                </form>
+            </ul>
+        </div>
+    {% endblock %}

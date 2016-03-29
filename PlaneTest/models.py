@@ -69,5 +69,8 @@ class Aircraft(models.Model):
 
 
 class ErrorReport(models.Model):
-    error_id = models.IntegerField()
+    error_id = models.IntegerField(primary_key=True)
     image_id = models.ForeignKey(Aircraft)
+    wrong_aircraft = models.BooleanField(default=False)
+    bad_picture = models.BooleanField(default=False)
+    open_response = models.CharField(max_length=200, null=False, blank=True)

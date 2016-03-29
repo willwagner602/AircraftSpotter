@@ -1,5 +1,5 @@
-from .models import Aircraft
-from django.forms import ModelForm, Textarea, CheckboxInput, TextInput, URLField
+from .models import Aircraft, ErrorReport
+from django.forms import Form, ModelForm, Textarea, CheckboxInput, TextInput, URLField
 
 
 # a test ModelForm class
@@ -20,3 +20,13 @@ class AircraftForm(ModelForm):
                    "redownload_flag": CheckboxInput,
                    "use_flag": CheckboxInput,
                    }
+
+
+class ErrorForm(ModelForm):
+
+    class Meta:
+        model = ErrorReport
+        fields = {'wrong_aircraft', "bad_picture", "open_response"}
+        widgets = {"wrong_aircraft": CheckboxInput,
+                   "bad_picture": CheckboxInput,
+                   "open_response": TextInput}

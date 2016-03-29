@@ -12,7 +12,7 @@
             {% endif %}
         </div>
         <div style="position: absolute; right: 5%; top:20%">
-            <form action="/error_report" method="POST">
+            <form action="{{ error_url }}" method="POST">
                 {% csrf_token %}
                 <button type="submit" name="error_report" value="Problem? Report it" class="btn waves-effect waves-light blue white-text">Problem? Report it</button>
             </form>

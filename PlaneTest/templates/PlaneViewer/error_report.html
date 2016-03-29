@@ -1,1 +1,39 @@
 {% extends 'PlaneViewer/plane_viewer.html' %}
+
+    {% block title %}
+        <title>Error Report</title>
+    {% endblock %}
+
+    {% block content %}
+        <div class="container">
+            <div class="row"></div>
+            {% if submitted %}
+            {% endif %}
+
+            <div class="row">
+                <div class="col s6 offset-s1">
+                    <img class="materialboxed" id="plane_image" box-shadow="10px 10px" width="100%" alignment="center" src="{{ image_location }}">
+                    {{ plane }}
+                </div>
+                <div class="col s5">
+                    What's the problem?
+                    <br/>
+                    <br/>
+                    <form action="{{ error_url }}" method="post">
+                        {% csrf_token %}
+                        {{ form }}
+                    </form>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col s2 offset-s5">
+                    <button class="btn waves-effect waves-light blue white-text" type="submit" name="action">Submit
+                    <i class="material-icons right">send</i>
+                </button>
+                </div>
+            </div>
+
+
+        </div>
+
+    {% endblock %}
