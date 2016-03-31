@@ -76,6 +76,7 @@ def error_report(request, current_image_id):
         plane = Aircraft.objects.get(image_id=current_image_id)
         image_location = static('PlaneTest/images/' + plane.location + '/' + plane.name)
         form = ErrorForm()
+        print(form)
         return render(request, 'PlaneViewer/error_report.html', {'image_id': current_image_id,
                                                                  'image_location': image_location,
                                                                  'plane': plane.aircraft,

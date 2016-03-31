@@ -26,7 +26,8 @@ class ErrorForm(ModelForm):
 
     class Meta:
         model = ErrorReport
-        fields = {'wrong_aircraft', "bad_picture", "open_response"}
+        fields = {"open_response", "bad_picture", 'wrong_aircraft', }
         widgets = {"wrong_aircraft": CheckboxInput,
                    "bad_picture": CheckboxInput,
-                   "open_response": TextInput}
+                   "open_response": TextInput,
+                   }
