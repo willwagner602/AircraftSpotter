@@ -16,29 +16,29 @@
                     {{ plane }}
                 </div>
             </div>
-            <div class="row">
-                <div class="col s10 offset-s1 l6 offset-l3">
-                    <form action="{{ error_url }}" method="post">
+
+            <form action="{{ error_url }}" method="post">
+                <div class="row">
+                    <div class="col s10 offset-s1 l6 offset-l3">
                         {% csrf_token %}
                         <br/>
                             <input group="problem" type="checkbox" name="wrong_aircraft" id="wrong_aircraft" required>
-                            <label for="id_wrong_aircraft">Wrong aircraft</label>
+                            <label for="wrong_aircraft">Wrong aircraft</label>
                         <br/>
                             <input group="problem" type="checkbox" name="bad_picture" id="bad_picture">
                             <label for="bad_picture">Bad picture</label>
                         <br/>
                             <input group="problem" type="text" name="open_response" id="open_response">
                             <label for="open_response">Description (optional)</label>
-                    </form>
+                    </div>
                 </div>
-            </div>
-            <div class="row">
-                <div class="col s2 offset-s5">
-                    <button class="btn waves-effect waves-light blue white-text" type="submit" name="action">Submit
-                    <i class="material-icons right">send</i>
-                </button>
+                <div class="row">
+                    <div class="col s2 offset-s5">
+                        <button class="btn waves-effect waves-light blue white-text" type="submit" name="action">Submit
+                        <i class="material-icons right">send</i></button>
+                    </div>
                 </div>
-            </div>
+            </form>
 
 
         </div>

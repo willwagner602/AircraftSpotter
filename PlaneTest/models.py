@@ -35,8 +35,8 @@ class Aircraft(models.Model):
     image_page = models.CharField(max_length=200)
     image_url = models.CharField(max_length=200)
     name = models.CharField(max_length=100)
-    image_license = models.CharField(max_length=100, null=True, blank=True)
-    license_text = models.CharField(max_length=1000)
+    image_license = models.CharField(max_length=2000, null=True, blank=True)
+    license_text = models.CharField(max_length=3000)
     location = models.CharField(max_length=200, null=True, blank=True)
     author = models.CharField(max_length=100, null=True, blank=True)
     aircraft = models.CharField(max_length=100, null=True, blank=True)
@@ -57,7 +57,8 @@ class Aircraft(models.Model):
                 "aircraft_type": self.aircraft_type,
                 "redownload_flag": self.redownload_flag,
                 "description": self.description,
-                "use_flag": self.use_flag,}
+                "use_flag": self.use_flag,
+                }
 
     def __str__(self):
         return self.name
