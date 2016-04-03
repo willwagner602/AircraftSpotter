@@ -1,4 +1,6 @@
 from django.db import models
+from django.contrib.auth.models import User
+import json
 
 
 class Types(models.Model):
@@ -71,7 +73,32 @@ class Aircraft(models.Model):
 
 class ErrorReport(models.Model):
     error_id = models.IntegerField(primary_key=True)
-    image_id = models.ForeignKey(Aircraft)
+    image = models.ForeignKey(Aircraft)
     wrong_aircraft = models.BooleanField(default=False)
     bad_picture = models.BooleanField(default=False)
     open_response = models.CharField(max_length=200, null=False, blank=True)
+
+
+class UserHistory(models.Model):
+    user_id = models.ForeignKey(User)
+    user_history = models.TextField()
+
+    def get_history(self):
+        return json.loads(self.user_history)
+
+    def add_history(self, aircraft_id, status):
+        current_history = self.get_history()
+        print(type(current_history))
+        current_history.append((aircraft_id, status))
+        print(current_history)
+        self.user_history = json.dumps(current_history)
+        self.save()
+
+    def get_plane_history(self):
+        # return the plane id for each entry in the user's history
+        return [x[0] for x in self.get_history()]
+
+    @classmethod
+    def create(cls, user_id):
+        user_history = cls(user_id=User.objects.get(pk=user_id), user_history=json.dumps([]))
+        return user_history

@@ -21,22 +21,28 @@
         <div class="navbar-fixed">
             <nav>
                 <div class="nav-wrapper blue white-text">
+                    <ul id="nav-mobile" class="left">
+                        <a href="/">Plane Quiz</a>
+                    </ul>
+                    <ul id="user_dropdown" class="dropdown-content">
+                        {% if request.user.is_authenticated %}
+                            <li><a href="{% url "django.contrib.auth.views.logout" %}?next=/">Log Out</a></li>
+                        {% else %}
+                            <li><a href="/user/login">Login</a></li>
+                            <li><a href="/user/create_user">Register</a></li>
+                        {% endif %}
+                    </ul>
                     <div class="container">
                         <div class="row">
-                            <div class="col" style="position:absolute; left: 20px;">
-                                 {% if request.user.is_authenticated %}
-                                    {{ request.user.username }}
-                                 {% else %}
-                                     <a href="/user/create_user">Register</a>
-                                 {% endif %}
-                            </div>
-                            <div class="col" style="position:absolute; right: 20px;">
-                                {% if request.user.is_authenticated %}
-                                    <a href="{% url "django.contrib.auth.views.logout" %}?next=/">Log Out</a>
-                                {% else %}
-                                    <a href="/user/login">Login</a>
-                                {% endif %}
-                            </div>
+                            <ul class="right">
+                                <div class="col" style="position:absolute; right: 20px;">
+                                    {% if request.user.is_authenticated %}
+                                        <a class="dropdown-button" href="#!" data-activates="user_dropdown">{{ request.user }}</a>
+                                    {% else %}
+                                        <a class="dropdown-button" href="#!" data-activates="user_dropdown">User Tasks</a>
+                                    {% endif %}
+                                </div>
+                            </ul>
                         </div>
 
                     </div>

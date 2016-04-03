@@ -21,15 +21,18 @@
                 <div class="row">
                     <div class="col s10 offset-s1 l6 offset-l3">
                         {% csrf_token %}
-                        <br/>
-                            <input group="problem" type="checkbox" name="wrong_aircraft" id="wrong_aircraft" required>
-                            <label for="wrong_aircraft">Wrong aircraft</label>
-                        <br/>
-                            <input group="problem" type="checkbox" name="bad_picture" id="bad_picture">
-                            <label for="bad_picture">Bad picture</label>
-                        <br/>
-                            <input group="problem" type="text" name="open_response" id="open_response">
-                            <label for="open_response">Description (optional)</label>
+                        <fieldset required>
+                            <br/>
+                                <input group="problem" type="checkbox" name="wrong_aircraft" id="wrong_aircraft">
+                                <label for="wrong_aircraft">This is labeled as the wrong aircraft.</label>
+                            <br/>
+                                <input group="problem" type="checkbox" name="bad_picture" id="bad_picture">
+                                <label for="bad_picture">I can't tell what aicraft this is from the picture</label>
+                            <br/>
+                                <input group="problem" type="text" name="open_response" id="open_response">
+                                <label for="open_response">If you have another problem, describe it here:</label>
+                            <input hidden="hidden" name="image" value="{{ error_url }}">
+                        </fieldset>
                     </div>
                 </div>
                 <div class="row">

@@ -1,9 +1,10 @@
 from random import shuffle
 
-from django.shortcuts import render
+from django.shortcuts import render, HttpResponseRedirect
 from django.contrib.staticfiles.templatetags.staticfiles import static
 
-from .models import Aircraft, AircraftType
+
+from .models import Aircraft, AircraftType, UserHistory
 from .forms import AircraftForm, ErrorForm
 
 
@@ -49,37 +50,73 @@ def aircraft_test(request):
         current_plane = Aircraft.objects.get(image_id=request.POST['aircraft_id'])
         current_type = current_plane.aircraft
 
+        success = 'Wrong! That plane was a ' + current_type
+
         # return a message about whether the guess was accurate
         if current_type == request.POST['answer']:
-            page_vars['success'] = "Success!"
-        else:
-            page_vars['success'] = "Wrong! That plane was a " + current_type
+            success = "Success!"
+
+        page_vars['success'] = success
+
+        # for authenticated users, add this aircraft to their history
+        if request.user.is_authenticated():
+            try:
+                user_history = UserHistory.objects.get(user_id=request.user.pk)
+            except UserHistory.DoesNotExist:
+                user_history = UserHistory.create(request.user.pk)
+                user_history.save()
+
+            user_history.add_history(plane.pk, success)
 
     return render(request, 'PlaneViewer/aircraft_test.html', page_vars)
 
 
 def error_report(request, current_image_id):
 
+    plane = Aircraft.objects.get(image_id=current_image_id)
+    image_location = static('PlaneTest/images/' + plane.location + '/' + plane.name)
+
     if request.method == 'POST':
+
+        error_form = ErrorForm(request.POST)
+
         print(request.POST)
+
+        if error_form.is_valid():
+            error_form.save()
+
+            return render(request, 'PlaneViewer/error_report.html', {
+                'image_id': current_image_id,
+                'image_location': image_location,
+                'plane': plane.aircraft,
+                'error_url': str(plane.image_id),
+                'form': error_form,
+                'success': 'Form Saved'
+            })
+        else:
+            return render(request, 'PlaneViewer/error_report.html', {
+                'image_id': current_image_id,
+                'image_location': image_location,
+                'plane': plane.aircraft,
+                'error_url': str(plane.image_id),
+                'form': error_form,
+                'errors': error_form.errors
+            })
 
         # store the error report, return to page with success and the error data
 
     # serve admins the data management page
     if request.user.is_superuser:
-        return data_manager(request, current_image_id)
+        return HttpResponseRedirect('/data/' + current_image_id)
 
     # serve regular users the error page
     else:
-        plane = Aircraft.objects.get(image_id=current_image_id)
-        image_location = static('PlaneTest/images/' + plane.location + '/' + plane.name)
-        form = ErrorForm()
-        print(form)
-        return render(request, 'PlaneViewer/error_report.html', {'image_id': current_image_id,
-                                                                 'image_location': image_location,
-                                                                 'plane': plane.aircraft,
-                                                                 'form': form,
-                                                                 'error_url': 'error_report/' + str(plane.image_id)})
+        return render(request, 'PlaneViewer/error_report.html', {
+            'image_id': current_image_id,
+            'image_location': image_location,
+            'plane': plane.aircraft,
+            'error_url': str(plane.image_id)
+        })
 
 
 def data_manager(request, current_image_id):
