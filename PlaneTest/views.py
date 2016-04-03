@@ -168,3 +168,47 @@ def data_manager(request, current_image_id):
         'redownload_flag': redownload_flag,
         'location': static_location(aircraft),
     })
+
+
+def convert_user_history_to_rows(user_history, row_length=6):
+    history_in_rows = []
+    current_row = []
+    image_count = 0
+
+    print("Length of user history is ", len(user_history))
+
+    for image in user_history:
+
+        if image_count < row_length:
+            current_row.append(image)
+            image_count += 1
+        else:
+            history_in_rows.append(current_row)
+            current_row = [image,]
+            image_count = 1
+
+    history_in_rows.append(current_row)
+
+    return history_in_rows
+
+
+def history(request):
+
+    page_vars = {}
+
+    if request.user.is_authenticated():
+        try:
+            user_history = UserHistory.objects.get(user_id=request.user.pk).get_aircraft_history()
+
+            # transform the plane IDs into the full images to display in the template
+            user_history = [Aircraft.objects.get(pk=image) for image in user_history]
+            user_history = [static_location(image) for image in user_history]
+            user_history = convert_user_history_to_rows(user_history)
+            page_vars['user_history'] = user_history
+
+        except UserHistory.DoesNotExist:
+            page_vars['error'] = 'You have no history.  Try testing a few planes!'
+    else:
+        page_vars['error'] = 'You must be logged in to view your history.'
+
+    return render(request, 'PlaneViewer/test_history.html', page_vars)
