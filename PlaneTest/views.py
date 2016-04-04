@@ -31,14 +31,17 @@ def aircraft_test(request):
     selection_options = [str(plane) for plane in selection_options[:5]]
     selection_options.append(plane_model)
 
+    # if there weren't 5 other aircraft of type, complete the list to 6 with random aircraft
+    selection_difference = 6 - len(selection_options)
+    if selection_difference > 0:
+        additional_selection_options = AircraftType.objects.order_by('?').all()
+        additional_selection_options = additional_selection_options.exclude(aircraft_name__in=selection_options)
+        selection_options += additional_selection_options[:selection_difference]
+
     # randomize the selection and create the left and right lists for the final page
     shuffle(selection_options)
-    left_selections = selection_options[:3]
-    right_selections = selection_options[3:]
 
-    page_vars = {'left_selections': left_selections,
-                 'right_selections': right_selections,
-                 'selections': selection_options,
+    page_vars = {'selections': selection_options,
                  'location': static_location(plane),
                  'author': plane.author,
                  'aircraft_id': plane.image_id,
@@ -76,34 +79,44 @@ def error_report(request, current_image_id):
     plane = Aircraft.objects.get(image_id=current_image_id)
     image_location = static('PlaneTest/images/' + plane.location + '/' + plane.name)
 
+    page_vars = {
+        'image_id': current_image_id,
+        'image_location': image_location,
+        'plane': plane.aircraft,
+        'error_url': str(plane.image_id),
+    }
+
     if request.method == 'POST':
+        data = request.POST
 
-        error_form = ErrorForm(request.POST)
+        print(data)
 
-        print(request.POST)
+        error_form = ErrorForm(data)
 
         if error_form.is_valid():
+
+            # store the error report, return to page with success and the error data
             error_form.save()
 
-            return render(request, 'PlaneViewer/error_report.html', {
-                'image_id': current_image_id,
-                'image_location': image_location,
-                'plane': plane.aircraft,
-                'error_url': str(plane.image_id),
-                'form': error_form,
-                'success': 'Form Saved'
-            })
-        else:
-            return render(request, 'PlaneViewer/error_report.html', {
-                'image_id': current_image_id,
-                'image_location': image_location,
-                'plane': plane.aircraft,
-                'error_url': str(plane.image_id),
-                'form': error_form,
-                'errors': error_form.errors
-            })
+            page_vars['success'] = 'Thanks for your error report!'
 
-        # store the error report, return to page with success and the error data
+            if 'wrong_aircraft' in data:
+                wrong_aircraft = data['wrong_aircraft']
+                page_vars['wrong_aircraft'] = wrong_aircraft
+
+            if 'bad_picture' in data:
+                bad_picture = data['bad_picture']
+                page_vars['bad_picture'] = bad_picture
+
+            if 'open_response' in data:
+                open_response = data['open_response']
+                page_vars['open_response'] = open_response
+            print(page_vars)
+            return render(request, 'PlaneViewer/error_report.html', page_vars)
+
+        else:
+            page_vars['errors'] = error_form.errors
+            return render(request, 'PlaneViewer/error_report.html', page_vars)
 
     # serve admins the data management page
     if request.user.is_superuser:
@@ -153,7 +166,7 @@ def data_manager(request, current_image_id):
         else:
             return render(request, 'PlaneViewer/data_manager.html', {
                 'aircraft_data': aircraft_data,
-                'success': 'Plane not saved.',
+                'error': 'Plane not saved.',
                 'errors': aircraft_form.errors,
                 'data_url': data_url,
                 'use_flag': use_flag,

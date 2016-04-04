@@ -1,0 +1,10 @@
+.user-dropdown {
+    margin-top: 64px;
+}
+
+.left-float-label {
+    position: absolute;
+    width:15%;
+    left: 5%;
+    top:20%;
+}

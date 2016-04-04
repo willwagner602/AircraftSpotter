@@ -88,9 +88,7 @@ class UserHistory(models.Model):
 
     def add_history(self, aircraft_id, status):
         current_history = self.get_history()
-        print(type(current_history))
         current_history.append((aircraft_id, status))
-        print(current_history)
         self.user_history = json.dumps(current_history)
         self.save()
 

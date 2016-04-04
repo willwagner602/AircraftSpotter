@@ -5,11 +5,16 @@
     {% endblock %}
 
     {% block content %}
+        <div class="left-float-label">
+            {% if success %}
+                {{ success }}
+            {% endif %}
+            {% if errors %}
+                {{ errors }}
+            {% endif %}
+        </div>
         <div class="container">
             <div class="row"></div>
-            {% if submitted %}
-            {% endif %}
-
             <div class="row">
                 <div class="col s10 offset-s1 l6 offset-l3">
                     <img class="materialboxed" id="plane_image" box-shadow="10px 10px" width="100%" alignment="center" src="{{ image_location }}">
@@ -21,15 +26,37 @@
                 <div class="row">
                     <div class="col s10 offset-s1 l6 offset-l3">
                         {% csrf_token %}
-                        <fieldset required>
+                        <fieldset>
                             <br/>
-                                <input group="problem" type="checkbox" name="wrong_aircraft" id="wrong_aircraft">
-                                <label for="wrong_aircraft">This is labeled as the wrong aircraft.</label>
+                                <input group="problem" type="checkbox" name="wrong_aircraft" id="wrong_aircraft"
+                                        {% if success %}
+                                            disabled="disabled"
+                                        {% endif %}>
+                                <label for="wrong_aircraft">
+                                    {% if wrong_aircraft %}
+                                        <b>This is labeled as the wrong aircraft.</b>
+                                    {% else %}
+                                        This is labeled as the wrong aircraft.
+                                    {% endif %}
+                                </label>
                             <br/>
-                                <input group="problem" type="checkbox" name="bad_picture" id="bad_picture">
-                                <label for="bad_picture">I can't tell what aicraft this is from the picture</label>
+                                <input group="problem" type="checkbox" name="bad_picture" id="bad_picture"
+                                        {% if success %}
+                                            disabled="disabled"
+                                        {% endif %}>
+                                <label for="bad_picture">
+                                    {% if bad_picture %}
+                                        <b>I can't tell what aircraft this is from the picture</b>
+                                    {% else %}
+                                        I can't tell what aircraft this is from the picture
+                                    {% endif %}
+                                </label>
                             <br/>
-                                <input group="problem" type="text" name="open_response" id="open_response">
+                                <input group="problem" type="text" name="open_response" id="open_response"
+                                        {% if success %}
+                                            disabled="disabled"
+                                            placeholder="{{ open_response }}"
+                                        {% endif %}>
                                 <label for="open_response">If you have another problem, describe it here:</label>
                             <input hidden="hidden" name="image" value="{{ error_url }}">
                         </fieldset>
@@ -37,8 +64,14 @@
                 </div>
                 <div class="row">
                     <div class="col s2 offset-s5">
-                        <button class="btn waves-effect waves-light blue white-text" type="submit" name="action">Submit
-                        <i class="material-icons right">send</i></button>
+                        {% if success %}
+                                <a href="{% url 'aircraft_test' %}">
+                                    <button type="submit" name="back" value="back" class="btn waves-effect waves-light blue white-text">back</button>
+                                </a>
+                        {% else %}
+                            <button class="btn waves-effect waves-light blue white-text" type="submit" name="action">Submit
+                            <i class="material-icons right">send</i></button>
+                        {% endif %}
                     </div>
                 </div>
             </form>
