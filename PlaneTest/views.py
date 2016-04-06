@@ -9,7 +9,7 @@ from .forms import AircraftForm, ErrorForm
 
 
 def static_location(aircraft):
-    return static('PlaneTest/images/' + aircraft.location + '/' + aircraft.name)
+    return static('AircraftViewer/images/' + aircraft.location + '/' + aircraft.name)
 
 
 def aircraft_test(request):
@@ -71,13 +71,13 @@ def aircraft_test(request):
 
             user_history.add_history(plane.pk, success)
 
-    return render(request, 'PlaneViewer/aircraft_test.html', page_vars)
+    return render(request, 'AircraftViewer/aircraft_test.html', page_vars)
 
 
 def error_report(request, current_image_id):
 
     plane = Aircraft.objects.get(image_id=current_image_id)
-    image_location = static('PlaneTest/images/' + plane.location + '/' + plane.name)
+    image_location = static('AircraftViewer/images/' + plane.location + '/' + plane.name)
 
     page_vars = {
         'image_id': current_image_id,
@@ -88,8 +88,6 @@ def error_report(request, current_image_id):
 
     if request.method == 'POST':
         data = request.POST
-
-        print(data)
 
         error_form = ErrorForm(data)
 
@@ -112,11 +110,11 @@ def error_report(request, current_image_id):
                 open_response = data['open_response']
                 page_vars['open_response'] = open_response
             print(page_vars)
-            return render(request, 'PlaneViewer/error_report.html', page_vars)
+            return render(request, 'AircraftViewer/error_report.html', page_vars)
 
         else:
             page_vars['errors'] = error_form.errors
-            return render(request, 'PlaneViewer/error_report.html', page_vars)
+            return render(request, 'AircraftViewer/error_report.html', page_vars)
 
     # serve admins the data management page
     if request.user.is_superuser:
@@ -124,7 +122,7 @@ def error_report(request, current_image_id):
 
     # serve regular users the error page
     else:
-        return render(request, 'PlaneViewer/error_report.html', {
+        return render(request, 'AircraftViewer/error_report.html', {
             'image_id': current_image_id,
             'image_location': image_location,
             'plane': plane.aircraft,
@@ -132,7 +130,7 @@ def error_report(request, current_image_id):
         })
 
 
-def data_manager(request, current_image_id):
+def aircraft_data(request, current_image_id):
 
     aircraft = Aircraft.objects.get(image_id=current_image_id)
     aircraft_data = aircraft.data()
@@ -155,7 +153,7 @@ def data_manager(request, current_image_id):
             aircraft_form.save()
 
             # return the updated form instance of the same plane they were just looking at
-            return render(request, 'PlaneViewer/data_manager.html', {
+            return render(request, 'AircraftViewer/aircraft_data.html', {
                 'aircraft_data': aircraft_data,
                 'success': 'Plane saved!',
                 'data_url': data_url,
@@ -164,7 +162,7 @@ def data_manager(request, current_image_id):
                 'location': static_location(aircraft),
             })
         else:
-            return render(request, 'PlaneViewer/data_manager.html', {
+            return render(request, 'AircraftViewer/aircraft_data.html', {
                 'aircraft_data': aircraft_data,
                 'error': 'Plane not saved.',
                 'errors': aircraft_form.errors,
@@ -174,7 +172,7 @@ def data_manager(request, current_image_id):
                 'location': static_location(aircraft),
             })
 
-    return render(request, 'PlaneViewer/data_manager.html', {
+    return render(request, 'AircraftViewer/aircraft_data.html', {
         'aircraft_data': aircraft_data,
         'data_url': data_url,
         'use_flag': use_flag,
@@ -183,7 +181,7 @@ def data_manager(request, current_image_id):
     })
 
 
-def convert_user_history_to_rows(user_history, row_length=6):
+def convert_image_list_to_rows(user_history, row_length=6):
     history_in_rows = []
     current_row = []
     image_count = 0
@@ -205,6 +203,37 @@ def convert_user_history_to_rows(user_history, row_length=6):
     return history_in_rows
 
 
+def data_manager(request):
+
+    page_vars = {}
+
+    if request.user.is_authenticated():
+
+        aircraft_types = AircraftType.objects.all().order_by('aircraft_name')
+        page_vars['aircraft_types'] = [aircraft.aircraft_name for aircraft in aircraft_types]
+
+        if request.method == 'POST':
+            # if the user is requesting data, get all the entries for that plane and return them
+            requested_aircraft = request.POST['aircraft']
+            aircraft = Aircraft.objects.filter(aircraft=requested_aircraft)
+
+            if len(aircraft) > 0:
+                aircraft_list = []
+                # create a list of dicts with the link to the data page and the image together in an entry
+                for entry in aircraft:
+                    aircraft_list.append({'data_link': '/data/' + str(entry.image_id),
+                                          'image': static_location(entry)})
+
+                page_vars['aircraft_images'] = convert_image_list_to_rows(aircraft_list[:20])
+
+            else:
+                page_vars['error'] = 'Sorry, no images are available for {}.'.format(requested_aircraft)
+    else:
+        page_vars['error'] = 'Only admins can use the management page.'
+
+    return render(request, 'AircraftViewer/data_manager.html', page_vars)
+
+
 def history(request):
 
     page_vars = {}
@@ -216,7 +245,7 @@ def history(request):
             # transform the plane IDs into the full images to display in the template
             user_history = [Aircraft.objects.get(pk=image) for image in user_history]
             user_history = [static_location(image) for image in user_history]
-            user_history = convert_user_history_to_rows(user_history)
+            user_history = convert_image_list_to_rows(user_history)
             page_vars['user_history'] = user_history
 
         except UserHistory.DoesNotExist:
@@ -224,4 +253,4 @@ def history(request):
     else:
         page_vars['error'] = 'You must be logged in to view your history.'
 
-    return render(request, 'PlaneViewer/test_history.html', page_vars)
+    return render(request, 'AircraftViewer/test_history.html', page_vars)
