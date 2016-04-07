@@ -222,7 +222,8 @@ def data_manager(request):
                 # create a list of dicts with the link to the data page and the image together in an entry
                 for entry in aircraft:
                     aircraft_list.append({'data_link': '/data/' + str(entry.image_id),
-                                          'image': static_location(entry)})
+                                          'image': static_location(entry),
+                                          'author': entry.author})
 
                 page_vars['aircraft_images'] = convert_image_list_to_rows(aircraft_list[:20])
 

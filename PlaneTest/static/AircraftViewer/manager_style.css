@@ -1,0 +1,20 @@
+.container {
+    position: relative;
+}
+
+.table-row {
+    display: table;
+    table-layout: fixed;
+}
+
+.column {
+    display: table-cell;
+    width: 10%;
+    position: relative;
+}
+
+.spacer-col {
+    display: table-cell;
+    width: 2%;
+    position: relative;
+}

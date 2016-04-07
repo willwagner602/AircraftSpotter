@@ -1,49 +1,66 @@
 {% extends 'AircraftViewer/aircraft_viewer.html' %}
 
-{% block style %}
-{% endblock %}
+    {% block style %}
+        {% load staticfiles %}
+        <link type="text/css" rel="stylesheet" href={% static "AircraftViewer/manager_style.css" %}>
+    {% endblock %}
 
-{% block title %}
-    <title>Data Manager</title>
-{% endblock %}
+    {% block title %}
+        <title>Data Manager</title>
+    {% endblock %}
 
-{% block content %}
-    <br/>
-    {% if error %}
+    {% block navbar %}
         <div class="container">
-        <div class="row">
-            <div class="col s6 offset-s3">
-                <h2 class="center-align">
-                    {{ error }}
-                </h2>
-            </div>
+            <a href="/">Plane Quiz</a>
+            {% if request.user.is_authenticated %}
+                <a class="dropdown-button" href="#!" data-activates="user_dropdown">{{ request.user }}</a>
+            {% else %}
+                <a class="dropdown-button" href="#!" data-activates="user_dropdown">User Tasks</a>
+            {% endif %}
+            {% if request.user.is_authenticated %}
+                <li><a href="/history">History</a></li>
+                <li><a href="{% url "django.contrib.auth.views.logout" %}?next=/">Log Out</a></li>
+            {% else %}
+                <li><a href="/user/login">Login</a></li>
+                <li><a href="/user/create_user">Register</a></li>
+            {% endif %}
         </div>
-    </div>
-    {% endif %}
-    <div class="container">
-        <div class="row">
-            <form action="" method="POST">
-                {% csrf_token %}
-                <label for="aircraft">Aircraft</label>
-                <div class="browser-default">
-                    <select name="aircraft">
-                        <option value="" disabled selected>Choose your aircraft</option>
+    {% endblock %}
+    {% block content %}
+        <br/>
+        {% if error %}
+            {{ error }}
+        {% endif %}
+        <div class="container">
+            <div class="table-row">
+                <form action="" method="POST">
+                    {% csrf_token %}
+                    <label for="aircraft">Aircraft</label>
+                    <div class="browser-default">
+                        <select name="aircraft">
+                            <option value="" disabled selected>Choose your aircraft</option>
                         {% for aircraft in aircraft_types %}
-                        <option value="{{ aircraft }}">{{ aircraft }}</option>
+                            <option value="{{ aircraft }}">{{ aircraft }}</option>
                         {% endfor %}
-                    </select>
-                </div>
-                <button type="submit">Submit</button>
-            </form>
-        </div>
+                        </select>
+                    </div>
+                    <button type="submit">Submit</button>
+                </form>
+            </div>
         {% for row in aircraft_images %}
-            <div class="row">
+            <div class="table-row">
                 {% for aircraft in row %}
-                    <a href="{{ aircraft.data_link }}">
-                    <img src="{{ aircraft.image }}" width="10%">
-                    </a>
+                    <div class="column">
+                        <a href="{{ aircraft.data_link }}">
+                        <img src="{{ aircraft.image }}" width="100%">
+                            <br/>
+                        {{ aircraft.author }}
+                        </a>
+                    </div>
+                    <div class="spacer-col">
+                    </div>
                 {% endfor %}
             </div>
         {% endfor %}
-    </div>
-{% endblock %}
+        </div>
+    {% endblock %}
