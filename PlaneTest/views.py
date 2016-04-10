@@ -133,17 +133,17 @@ def error_report(request, current_image_id):
 def aircraft_data(request, current_image_id):
 
     aircraft = Aircraft.objects.get(image_id=current_image_id)
-    aircraft_data = aircraft.data()
     data_url = current_image_id
 
     use_flag = False
     redownload_flag = False
 
-    if aircraft_data['use_flag'] == 1:
-        use_flag = True
-
-    if aircraft_data['redownload_flag'] == 1:
-        redownload_flag = True
+    page_vars = {
+        'data_url': data_url,
+        'use_flag': use_flag,
+        'redownload_flag': redownload_flag,
+        'location': static_location(aircraft),
+    }
 
     if request.method == 'POST':
 
@@ -153,32 +153,22 @@ def aircraft_data(request, current_image_id):
             aircraft_form.save()
 
             # return the updated form instance of the same plane they were just looking at
-            return render(request, 'AircraftViewer/aircraft_data.html', {
-                'aircraft_data': aircraft_data,
-                'success': 'Plane saved!',
-                'data_url': data_url,
-                'use_flag': use_flag,
-                'redownload_flag': redownload_flag,
-                'location': static_location(aircraft),
-            })
-        else:
-            return render(request, 'AircraftViewer/aircraft_data.html', {
-                'aircraft_data': aircraft_data,
-                'error': 'Plane not saved.',
-                'errors': aircraft_form.errors,
-                'data_url': data_url,
-                'use_flag': use_flag,
-                'redownload_flag': redownload_flag,
-                'location': static_location(aircraft),
-            })
+            page_vars['success'] = 'Plane saved!'
 
-    return render(request, 'AircraftViewer/aircraft_data.html', {
-        'aircraft_data': aircraft_data,
-        'data_url': data_url,
-        'use_flag': use_flag,
-        'redownload_flag': redownload_flag,
-        'location': static_location(aircraft),
-    })
+        else:
+            page_vars['errors'] = aircraft_form.errors
+
+    current_aircraft_data = aircraft.data()
+
+    page_vars['aircraft_data'] = current_aircraft_data
+
+    if current_aircraft_data['use_flag'] == 1:
+        use_flag = True
+
+    if current_aircraft_data['redownload_flag'] == 1:
+        redownload_flag = True
+
+    return render(request, 'AircraftViewer/aircraft_data.html', page_vars)
 
 
 def convert_image_list_to_rows(user_history, row_length=6):
@@ -215,7 +205,7 @@ def data_manager(request):
         if request.method == 'POST':
             # if the user is requesting data, get all the entries for that plane and return them
             requested_aircraft = request.POST['aircraft']
-            aircraft = Aircraft.objects.filter(aircraft=requested_aircraft)
+            aircraft = Aircraft.objects.filter(aircraft=requested_aircraft, redownload_flag__exact=0)
 
             if len(aircraft) > 0:
                 aircraft_list = []
@@ -225,7 +215,7 @@ def data_manager(request):
                                           'image': static_location(entry),
                                           'author': entry.author})
 
-                page_vars['aircraft_images'] = convert_image_list_to_rows(aircraft_list[:20])
+                page_vars['aircraft_images'] = convert_image_list_to_rows(aircraft_list[:180])
 
             else:
                 page_vars['error'] = 'Sorry, no images are available for {}.'.format(requested_aircraft)
