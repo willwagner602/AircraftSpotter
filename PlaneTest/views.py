@@ -15,7 +15,7 @@ def static_location(aircraft):
 def aircraft_test(request):
 
     # get the individual plane for display, and the necessary data to display it
-    plane = Aircraft.objects.filter(redownload_flag__exact=0, aircraft_type__isnull=False).order_by('?').first()
+    plane = Aircraft.objects.filter(use_flag=True).order_by('?').first()
 
     # get information necessary to identify similar planes for challenging multiple choice options
     plane_model = plane.aircraft
