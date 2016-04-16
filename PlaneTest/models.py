@@ -36,7 +36,7 @@ class Aircraft(models.Model):
     image_id = models.IntegerField(primary_key=True)
     image_page = models.CharField(max_length=200)
     image_url = models.CharField(max_length=200)
-    name = models.CharField(max_length=100)
+    name = models.CharField(max_length=300)
     image_license = models.CharField(max_length=2000, null=True, blank=True)
     license_text = models.CharField(max_length=3000)
     location = models.CharField(max_length=200, null=True, blank=True)

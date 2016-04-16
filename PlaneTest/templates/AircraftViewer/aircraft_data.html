@@ -17,12 +17,14 @@
                     {% endif %}
                     <br>
                     {% if aircraft_data %}
-                    <img src="{{ location }}" width="50%"/>
+                        <a href="{{ aircraft_data.image_page }}">
+                            <img src="{{ location }}" width="50%"/>
+                        </a>
                         <form action={{ data_url }} method="post">
                             {% csrf_token %}
-                            <a href="{{ aircraft_data.image_page }}"> Plane Page </a>
                             <input type="text" name="image_page" value="{{ aircraft_data.image_page }}" readonly="readonly" hidden="hidden" style="color:purple;"/>
-                            <input type="text" name="image_url" value="{{ aircraft_data.image_url }}" readonly="readonly" style="color:purple; />
+                            <input type="text" name="image_page" value="{{ aircraft_data.image_page }}" readonly="readonly" style="color:purple"><label for="image_page">Image Page</label>
+                            <input type="text" name="image_url" value="{{ aircraft_data.image_url }}" readonly="readonly" style="color:purple" />
                                 <label for="image_url">Image URL</label>
                             <input type="text" name="name" value="{{ aircraft_data.name }}" style="color:purple; />
                                 <label for="name">Name</label>

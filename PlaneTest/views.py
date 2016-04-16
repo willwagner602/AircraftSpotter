@@ -86,6 +86,10 @@ def error_report(request, current_image_id):
         'error_url': str(plane.image_id),
     }
 
+    # serve admins the data management page
+    if request.user.is_superuser:
+        return HttpResponseRedirect('/data/' + current_image_id)
+
     if request.method == 'POST':
         data = request.POST
 
@@ -109,25 +113,13 @@ def error_report(request, current_image_id):
             if 'open_response' in data:
                 open_response = data['open_response']
                 page_vars['open_response'] = open_response
-            print(page_vars)
-            return render(request, 'AircraftViewer/error_report.html', page_vars)
 
         else:
             page_vars['errors'] = error_form.errors
-            return render(request, 'AircraftViewer/error_report.html', page_vars)
-
-    # serve admins the data management page
-    if request.user.is_superuser:
-        return HttpResponseRedirect('/data/' + current_image_id)
 
     # serve regular users the error page
     else:
-        return render(request, 'AircraftViewer/error_report.html', {
-            'image_id': current_image_id,
-            'image_location': image_location,
-            'plane': plane.aircraft,
-            'error_url': str(plane.image_id)
-        })
+        return render(request, 'AircraftViewer/error_report.html', page_vars)
 
 
 def aircraft_data(request, current_image_id):
@@ -139,10 +131,7 @@ def aircraft_data(request, current_image_id):
     redownload_flag = False
 
     page_vars = {
-        'data_url': data_url,
-        'use_flag': use_flag,
-        'redownload_flag': redownload_flag,
-        'location': static_location(aircraft),
+        'data_url': data_url
     }
 
     if request.method == 'POST':
@@ -159,8 +148,8 @@ def aircraft_data(request, current_image_id):
             page_vars['errors'] = aircraft_form.errors
 
     current_aircraft_data = aircraft.data()
-
     page_vars['aircraft_data'] = current_aircraft_data
+    page_vars['location'] = static_location(aircraft)
 
     if current_aircraft_data['use_flag'] == 1:
         use_flag = True
@@ -205,7 +194,7 @@ def data_manager(request):
         if request.method == 'POST':
             # if the user is requesting data, get all the entries for that plane and return them
             requested_aircraft = request.POST['aircraft']
-            aircraft = Aircraft.objects.filter(aircraft=requested_aircraft, redownload_flag__exact=0)
+            aircraft = Aircraft.objects.filter(aircraft=requested_aircraft, redownload_flag__exact=0, use_flag__exact=0)
 
             if len(aircraft) > 0:
                 aircraft_list = []
