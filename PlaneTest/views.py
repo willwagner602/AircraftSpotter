@@ -9,7 +9,7 @@ from .forms import AircraftForm, ErrorForm
 
 
 def static_location(aircraft):
-    return static('AircraftViewer/images/' + aircraft.location + '/' + aircraft.name)
+    return static('PlaneTest/images/' + aircraft.location + '/' + aircraft.name)
 
 
 def aircraft_test(request):
@@ -77,7 +77,7 @@ def aircraft_test(request):
 def error_report(request, current_image_id):
 
     plane = Aircraft.objects.get(image_id=current_image_id)
-    image_location = static('AircraftViewer/images/' + plane.location + '/' + plane.name)
+    image_location = static('PlaneTest/images/' + plane.location + '/' + plane.name)
 
     page_vars = {
         'image_id': current_image_id,
