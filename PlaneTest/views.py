@@ -71,7 +71,7 @@ def aircraft_test(request):
 
             user_history.add_history(plane.pk, success)
 
-    return render(request, 'AircraftViewer/aircraft_test.html', page_vars)
+    return render(request, 'AircraftViewer/aircraft_spotter.html', page_vars)
 
 
 def error_report(request, current_image_id):

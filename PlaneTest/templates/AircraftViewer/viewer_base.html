@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     {% block title %}
-        <title>Plane Quiz</title>
+        <title>Aircraft Spotter</title>
     {% endblock %}
     {% load staticfiles %}
     {% block style %}
@@ -22,7 +22,7 @@
             <nav>
                 <div class="nav-wrapper blue white-text">
                     <ul id="nav-mobile" class="left">
-                        <a href="/">Plane Quiz</a>
+                        <a href="/">Aircraft Spotter</a>
                     </ul>
                     <ul id="user_dropdown" class="dropdown-content user-dropdown">
                         {% if request.user.is_authenticated %}

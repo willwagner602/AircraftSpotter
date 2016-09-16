@@ -1,17 +1,11 @@
-import os
-
-import sqlalchemy
-from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy import Column, Integer, String
+from sqlalchemy import Column, String
 import sqlalchemy
 import os
 
 
 def confirm_image_download(image, folders):
     # necessary information to lookup image in dictionary
-
-
     name = image[2]
     location = image[5]
 
@@ -41,6 +35,7 @@ def get_image_lists(base_directory):
     return image_lists
    
 Base = declarative_base()
+
 
 class Image(Base):
     __tablename__ = 'images'
