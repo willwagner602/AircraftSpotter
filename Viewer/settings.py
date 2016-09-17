@@ -15,7 +15,6 @@ import os
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.8/howto/deployment/checklist/
 
@@ -37,7 +36,7 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'PlaneTest',
+    'AircraftSpotter',
     'Accounts',
 )
 
@@ -80,7 +79,7 @@ WSGI_APPLICATION = 'Viewer.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': '/home/wbw/Dropbox/Programming/Projects/PlaneViewer/images.sqlite3',
+        'NAME': 'A:\Projects\PycharmProjects\Viewer\images.sqlite3',
     }
 }
 
@@ -107,3 +106,7 @@ LOGOUT_REDIRECT_URL = '/'
 # https://docs.djangoproject.com/en/1.8/howto/static-files/
 
 STATIC_URL = '/static/'
+
+STATICFILES_DIRS = ['A:\Projects\PycharmProjects\Viewer\Accounts\static',
+                    'A:\Projects\PycharmProjects\Viewer\AircraftSpotter\static']
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
