@@ -1,0 +1,95 @@
+{% extends 'AircraftSpotter/viewer_base.html' %}
+
+    {% block title %}
+        <title>Error Report</title>
+    {% endblock %}
+
+    {% block content %}
+        <div class="left-float-label">
+            {% if success %}
+                {{ success }}
+            {% endif %}
+            {% if errors %}
+                {{ errors }}
+            {% endif %}
+        </div>
+        <div class="container">
+            <div class="row"></div>
+            <div class="row">
+                <div class="col s10 offset-s1 l6 offset-l3">
+                    <img class="materialboxed" id="plane_image" box-shadow="10px 10px" width="100%" alignment="center" src="{{ image_location }}">
+                    {{ plane }}
+                </div>
+            </div>
+
+            <form action="{{ error_url }}" method="post">
+                <div class="row">
+                    <div class="col s10 offset-s1 l6 offset-l3">
+                        {% csrf_token %}
+                        <fieldset>
+                            <br/>
+                                <input group="problem" type="checkbox" name="wrong_aircraft" id="wrong_aircraft"
+                                        {% if success %}
+                                            disabled="disabled"
+                                        {% endif %}>
+                                <label for="wrong_aircraft">
+                                    {% if wrong_aircraft %}
+                                        <b>This is labeled as the wrong aircraft.</b>
+                                    {% else %}
+                                        This is labeled as the wrong aircraft.
+                                    {% endif %}
+                                </label>
+                            <br/>
+                                <input group="problem" type="checkbox" name="bad_picture" id="bad_picture"
+                                        {% if success %}
+                                            disabled="disabled"
+                                        {% endif %}>
+                                <label for="bad_picture">
+                                    {% if bad_picture %}
+                                        <b>I can't tell what aircraft this is from the picture</b>
+                                    {% else %}
+                                        I can't tell what aircraft this is from the picture
+                                    {% endif %}
+                                </label>
+                            <br/>
+                                <input group="problem" type="checkbox" name="copyright" id="copyright"
+                                        {% if success %}
+                                            disabled="disabled"
+                                        {% endif %}>
+                                <label for="bad_picture">
+                                    {% if bad_picture %}
+                                        <b>I own the copyright to this image, and it is not correctly displayed on this site.</b>
+                                    {% else %}
+                                        I own the copyright to this image, and it is not correctly displayed on this site.
+                                    {% endif %}
+                                </label>
+                            <br/>
+                                <input group="problem" type="text" name="open_response" id="open_response"
+                                    {% if success %}
+                                        disabled="disabled"
+                                        placeholder="{{ open_response }}"
+                                    {% endif %}>
+                                <label for="open_response">If you have another problem, describe it here:</label>
+                            <input hidden="hidden" name="image" value="{{ error_url }}">
+                        </fieldset>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col s2 offset-s5">
+                        {% if success %}
+                            </form>
+                            <form action="{% url 'aircraft_spotter' %}">
+                                <button type="submit" name="back" class="btn waves-effect waves-light blue white-text">back</button>
+                            </form>
+                        {% else %}
+                            <button class="btn waves-effect waves-light blue white-text" type="submit" name="action">Submit
+                            <i class="material-icons right">send</i></button>
+                        {% endif %}
+                    </div>
+                </div>
+            </form>
+
+
+        </div>
+
+    {% endblock %}

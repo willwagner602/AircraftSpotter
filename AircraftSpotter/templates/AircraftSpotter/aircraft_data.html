@@ -1,0 +1,71 @@
+{% extends 'AircraftSpotter/viewer_base.html' %}
+
+    {% block title %}
+        <title>Plane Data</title>
+    {% endblock %}
+
+    {% block content %}
+        <br/>
+        <div class="container">
+            <div class="row">
+                <div class="col s12">
+                    {% if success %}
+                        <h3>{{ success }}</h3>
+                    {% endif %}
+                    {% if errors %}
+                        {{ errors }}
+                    {% endif %}
+                    <br>
+                    {% if aircraft_data %}
+                        <a href="{{ aircraft_data.image_page }}">
+                            <img src="{{ location }}" width="50%"/>
+                        </a>
+                        <form action={{ data_url }} method="post">
+                            {% csrf_token %}
+                            <input type="text" name="image_page" value="{{ aircraft_data.image_page }}" readonly="readonly" hidden="hidden" style="color:purple;"/>
+                            <input type="text" name="image_page" value="{{ aircraft_data.image_page }}" readonly="readonly" style="color:purple"><label for="image_page">Image Page</label>
+                            <input type="text" name="image_url" value="{{ aircraft_data.image_url }}" readonly="readonly" style="color:purple" />
+                                <label for="image_url">Image URL</label>
+                            <input type="text" name="name" value="{{ aircraft_data.name }}" style="color:purple; />
+                                <label for="name">Name</label>
+                            <input type="text" name="location" value="{{ aircraft_data.location }}" style="color:purple; />
+                                <label for="location">Location folder</label>
+                            <input type="text" name="image_license" value="{{ aircraft_data.image_license }}" />
+                                <label for="image_license">Image License</label>
+                            <input type="text" name="license_text" value="{{ aircraft_data.license_text }}" />
+                                <label for="license_text">Full License Text</label>
+                            <input type="text" name="author" value="{{ aircraft_data.author }}" />
+                                <label for="author">Author</label>
+                            <input type="text" name="aircraft" value="{{ aircraft_data.aircraft }}" />
+                                <label for="aircraft">Aircraft</label>
+                            <input type="text" name="aircraft_type" value="{{ aircraft_data.aircraft_type }}" />
+                                <label for="aircraft_type">Aircraft Type</label>
+                            <input type="text" name="description" value="{{ aircraft_data.description }}" />
+                                <label for="description">Description</label>
+                            <p>
+                                <input type="checkbox" name="redownload_flag" id="redownload_flag"
+                                        {% if aircraft_data.redownload_flag %}
+                                            checked="1"
+                                        {% endif %}
+                                        />
+                                <label for="redownload_flag">Redownload Flag</label>
+                            </p>
+                            <p>
+                                <input type="checkbox" name="use_flag" id="use_flag"
+                                        {% if aircraft_data.use_flag %}
+                                            checked="1"
+                                        {% endif %} />
+                                <label for="use_flag">Use Flag</label>
+                            </p>
+                            <p>
+                                <button class="btn waves-effect waves-light blue white-text" type="submit" name="action"/>Submit
+                                <i class="material-icons right">send</i>
+                            </p>
+                        </form>
+                    {% else %}
+                        Aircraft data not found.
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    {% endblock %}
