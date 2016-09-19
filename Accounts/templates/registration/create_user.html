@@ -6,21 +6,23 @@
                 <br>
                 <br>
             </div>
+            {% if error %}
+                {{ error }}
+            {% endif %}
             <form name="create_user" class="send-form" method="POST">
                 {% csrf_token %}
                 <div class="row">
                     <div class="col s8 offset-s2">
-                        Your email address will be your username.
+                        <input type="text" name="username" placeholder="username">
                     </div>
+                </div>
+                <div class="row">
                     <div class="col s8 offset-s2">
                         <input type="email" name="email" placeholder="email">
                     </div>
                 </div>
                 <div class="row">
                     <div class="col s8 offset-s2">
-                        {% if error == "passwords do not match" %}
-                            <p style="color:red">Passwords do not match</p>
-                        {% endif %}
                         <input type="password" name="password" placeholder="password">
                     </div>
                 </div>

@@ -27,7 +27,7 @@
                     <ul id="user_dropdown" class="dropdown-content user-dropdown">
                         {% if request.user.is_authenticated %}
                             <li><a href="/history">History</a></li>
-                            <li><a href="{% url "django.contrib.auth.views.logout" %}?next=/">Log Out</a></li>
+                            <li><a href="/user/logout">Log Out</a></li>
                         {% else %}
                             <li><a href="/user/login">Login</a></li>
                             <li><a href="/user/create_user">Register</a></li>

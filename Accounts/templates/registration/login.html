@@ -3,6 +3,9 @@
     <div class="container">
         <div class="row">
             <br>
+                {% if success %}
+                    User successfully created!
+                {% endif %}
             <br>
         </div>
         <form name="user_login" class="send-form" method="POST">
