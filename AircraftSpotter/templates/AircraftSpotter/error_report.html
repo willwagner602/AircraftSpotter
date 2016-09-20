@@ -57,19 +57,19 @@
                                             disabled="disabled"
                                         {% endif %}>
                                 <label for="bad_picture">
-                                    {% if bad_picture %}
+                                    {% if copyright %}
                                         <b>I own the copyright to this image, and it is not correctly displayed on this site.</b>
                                     {% else %}
                                         I own the copyright to this image, and it is not correctly displayed on this site.
                                     {% endif %}
                                 </label>
                             <br/>
+                                <label for="open_response">If you have another problem, describe it here:</label>
                                 <input group="problem" type="text" name="open_response" id="open_response"
                                     {% if success %}
                                         disabled="disabled"
                                         placeholder="{{ open_response }}"
                                     {% endif %}>
-                                <label for="open_response">If you have another problem, describe it here:</label>
                             <input hidden="hidden" name="image" value="{{ error_url }}">
                         </fieldset>
                     </div>
