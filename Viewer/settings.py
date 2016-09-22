@@ -24,7 +24,8 @@ SECRET_KEY = '_h&+teq1w&m*6*^z^o&w4g-4vjwmmodaxo&_&g++=rch(+tnc='
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1', 'www.willwagner.me/AircraftSpotter', 'www.willwagner.me:8000']
+ALLOWED_HOSTS = ['127.0.0.1', 'www.willwagner.me/AircraftSpotter', 'www.willwagner.me:8000',
+                 'willwagner.me', 'www.willwagner.me']
 
 
 # Application definition
@@ -79,7 +80,7 @@ WSGI_APPLICATION = 'Viewer.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': 'images.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'images.sqlite3'),
     }
 }
 
@@ -107,7 +108,7 @@ LOGOUT_REDIRECT_URL = '/'
 
 STATIC_URL = '/static/'
 
-STATICFILES_DIRS = [os.path.join(BASE_DIR, 'Accounts\static'),
+STATICFILES_DIRS = [os.path.join(BASE_DIR, '\Accounts\static'),
                     os.path.join(BASE_DIR, '\AircraftSpotter\static')]
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
