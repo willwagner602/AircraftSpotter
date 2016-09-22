@@ -1,7 +1,7 @@
 __author__ = 'wbw'
 
 from django.shortcuts import render, redirect
-from django.contrib.auth import logout
+from django.contrib.auth import logout, login, authenticate
 from django.contrib.auth.models import User
 from django.db import IntegrityError
 
@@ -25,7 +25,7 @@ def create_user(request):
             print(request.__dict__)
             return render(request, 'registration/create_user.html', {'error': 'This username is not valid'})
 
-        return redirect('/user/login', success = 'User created successfully!', username = user.username)
+        return redirect('/AircraftSpotter/user/login', success = 'User created successfully!', username = user.username)
 
     else:
         return render(request, 'registration/create_user.html', {})
@@ -33,17 +33,20 @@ def create_user(request):
 
 def login_user(request):
     if request.user.is_authenticated:
-        redirect('/')
+        return redirect('/AircraftSpotter/')
     elif request.method == 'POST':
-        print(request.POST)
+        username = request.POST['username']
+        password = request.POST['password']
+        user = authenticate(username=username, password=password)
+        if user is not None:
+            login(request, user)
+            return redirect('/AircraftSpotter/aircraft_spotter.html')
+        else:
+            return render(request, 'registration/login.html', {'display':'user does not exist'})
     else:
-        print('test')
         return render(request, 'registration/login.html', {'username': 'username', 'shit':'shit'})
 
 
-def logout(request):
-    if request.user.is_authenticated:
-        logout(request)
-        return render(request, 'registration/logout.html', {})
-    else:
-        return render(request, '/')
+def logout_user(request):
+    logout(request)
+    return redirect('/AircraftSpotter/')
