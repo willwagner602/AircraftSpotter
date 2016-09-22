@@ -1,14 +1,23 @@
+"""
+A short script to migrate SQLite image objects to a specific MySQL database
+"""
+
+__author__ = 'Will Wagner'
+
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy import Column, Integer, String, Boolean
+from sqlalchemy import Column, String, Boolean
 
 # session imports
 from sqlalchemy import create_engine, exc
 from sqlalchemy.orm import sessionmaker
 
-Base = declarative_base()
+BASE = declarative_base()
 
 
-class SqlitePlaneImage(Base):
+class SqlitePlaneImage(BASE):  # pylint: disable=too-few-public-methods
+    """
+    A plane image object from SQLite3
+    """
 
     __tablename__ = 'images'
 
@@ -27,7 +36,10 @@ class SqlitePlaneImage(Base):
         return self.image_page
 
 
-class MySqlPlaneImage(Base):
+class MySqlPlaneImage(BASE):  # pylint: disable=too-few-public-methods
+    """
+    A plane image object from SQLite3
+    """
 
     __tablename__ = 'images2'
 
@@ -48,11 +60,17 @@ class MySqlPlaneImage(Base):
 
 
 def convert_image_object(image_object):
+    """
+    Convert SQLite image objects to MySQL image objects
+    :param SQLite image_object:
+    :return MySQL image object:
+    """
+
     new_image = MySqlPlaneImage(image_page=image_object.image_page,
                                 image_url=image_object.image_url,
                                 name=image_object.name,
                                 image_license=image_object.image_license,
-                                license_text=image.license_text,
+                                license_text=image_object.license_text,
                                 location=image_object.location,
                                 author=image_object.author,
                                 aircraft=image_object.aircraft,
@@ -60,19 +78,28 @@ def convert_image_object(image_object):
                                 redownload_flag=image_object.redownload_flag)
     return new_image
 
-# setup engines
-if __name__ == '__main__':
+
+def convert_all():
+    """
+    Convert all images from SQLite to MySQL
+    :return:
+    """
+
+    # setup engines to each database
     mysql_engine = create_engine('mysql+pymysql://root:semperfi@localhost:3306/plane_viewer')
     sqlite_engine = create_engine('sqlite:///images.sqlite3')
 
-    MysqlSessionMaker = sessionmaker(bind=mysql_engine)
-    SqliteSessionMaker = sessionmaker(bind=sqlite_engine)
+    # setup session for each database
+    mysqlsessionamaker = sessionmaker(bind=mysql_engine)
+    sqlitesessionmaker = sessionmaker(bind=sqlite_engine)
 
-    mysql_session = MysqlSessionMaker()
-    sqlite_session = SqliteSessionMaker()
+    mysql_session = mysqlsessionamaker()
+    sqlite_session = sqlitesessionmaker()
 
+    # retrieve all images from SQLite
     sqlite_images = sqlite_session.query(SqlitePlaneImage).all()
 
+    # convert all images from SQLite to MySQL and attempt to load them, ignoring duiplicates
     for image in sqlite_images:
         mysql_image = convert_image_object(image)
 
@@ -86,3 +113,6 @@ if __name__ == '__main__':
 
     mysql_images = mysql_session.query(MySqlPlaneImage).all()
     print(len(mysql_images))
+
+if __name__ == "__main__":
+    convert_all()

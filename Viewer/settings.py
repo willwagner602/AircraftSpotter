@@ -79,7 +79,7 @@ WSGI_APPLICATION = 'Viewer.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': 'A:\Projects\PycharmProjects\Viewer\images.sqlite3',
+        'NAME': 'images.sqlite3',
     }
 }
 
@@ -107,6 +107,7 @@ LOGOUT_REDIRECT_URL = '/'
 
 STATIC_URL = '/static/'
 
-STATICFILES_DIRS = ['A:\Projects\PycharmProjects\Viewer\Accounts\static',
-                    'A:\Projects\PycharmProjects\Viewer\AircraftSpotter\static']
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'Accounts\static'),
+                    os.path.join(BASE_DIR, '\AircraftSpotter\static')]
+
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')

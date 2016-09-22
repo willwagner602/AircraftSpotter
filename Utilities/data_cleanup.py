@@ -1,11 +1,8 @@
 from datetime import datetime, timedelta
 import requests
-import os
 import time
 import sqlite3
 
-import sqlalchemy
-from sqlalchemy.orm import sessionmaker
 from bs4 import BeautifulSoup
 
 

@@ -5,6 +5,13 @@ import os
 
 
 def confirm_image_download(image, folders):
+    """
+    Confirm the existence of the physical image file in its correct location on disk
+    :param image: image object
+    :param folders: list of all image folders
+    :return: bool of success
+    """
+
     # necessary information to lookup image in dictionary
     name = image[2]
     location = image[5]
@@ -19,25 +26,39 @@ def confirm_image_download(image, folders):
 
 
 def mark_image_for_download(image, db_connection):
+    """
+    Update image's flag in SQL to redownload the physical file
+    :param image:
+    :param db_connection:
+    :return:
+    """
     url = image[0]
     update_statement = """UPDATE images SET redownload_flag = 1 WHERE image_page = '{}'""".format(url)
     db_connection.execute(update_statement)
+    db_connection.commit()
 
 
 def get_image_lists(base_directory):
-    # for performance purposes, create a dict with the lists of files in each image folder
-    image_lists = {}
+    """
+    Setup lists of all the images found in each directory, to save time over repeatedly scanning directories
+    :param base_directory:
+    :return:
+    """
+    images_by_folder = {}
     os.chdir(base_directory)
+    print(base_directory)
     for folder in os.listdir():
+        print(folder)
         os.chdir(folder)
-        image_lists[folder] = os.listdir()
+        images_by_folder[folder] = os.listdir()
         os.chdir(base_directory)
-    return image_lists
-   
-Base = declarative_base()
+    return images_by_folder
+
+# setup base class for database models
+BASE = declarative_base()
 
 
-class Image(Base):
+class Image(BASE):
     __tablename__ = 'images'
     image_page = Column(String(200), primary_key=True)
     image_url = Column(String(200))
@@ -68,21 +89,22 @@ class Image(Base):
 
 def create_table():
     engine = sqlalchemy.create_engine('sqlite:///' + os.getcwd() + '\\images.db')
-    Base.metadata.create_all(engine)
+    BASE.metadata.create_all(engine)
 
 if __name__ == "__main__":
+
     # setup DB connection
-    engine = sqlalchemy.create_engine('sqlite:///' + os.getcwd() + '\\planes.sqlite3')
+    engine = sqlalchemy.create_engine('sqlite:///A:\Dropbox\Projects\PlaneViewer\\images.sqlite3')
     connection = engine.connect()
     
     # get each image from the DB that has an Aircraft assigned to it
-    identified_aircraft = connection.execute('''SELECT * FROM images WHERE redownload_flag = 0''')
+    identified_aircraft = connection.execute('''SELECT * FROM images WHERE redownload_flag = 0 AND use_flag = 1''')
     
     missing_image_count = 0
-    image_lists = get_image_lists(r'A:\Projects\PycharmProjects\PlaneScraper\images')
+    images_by_folder = get_image_lists(r'A:\Projects\PycharmProjects\PlaneScraper\images')
     
-    for value in image_lists:
-        print(value)
+    for folder in images_by_folder:
+        print(folder)
     
     print(' Distinct Locations ')
     
@@ -90,12 +112,15 @@ if __name__ == "__main__":
     
     for loc in locations:
         print(loc)
-    
+
+    # iterate over images where the aircraft is identified and download them
     for i, row in enumerate(identified_aircraft):
-        if i % 1000 == 0:
-            print("Missing images:", missing_image_count)
-        if not confirm_image_download(row, image_lists):
+        if i % 100 == 0:
+            print("Missing images: {} out of {}".format(missing_image_count, i))
+        if not confirm_image_download(row, images_by_folder):
             mark_image_for_download(row, connection)
             missing_image_count += 1
+
+    print("Missing {} images.".format(missing_image_count))
 
     connection.close()
