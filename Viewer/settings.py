@@ -24,8 +24,7 @@ SECRET_KEY = '_h&+teq1w&m*6*^z^o&w4g-4vjwmmodaxo&_&g++=rch(+tnc='
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1', 'www.willwagner.me/AircraftSpotter', 'www.willwagner.me:8000',
-                 'willwagner.me', 'www.willwagner.me']
+ALLOWED_HOSTS = ['127.0.0.1', 'aircraftspotter.willwagner.me', 'willwagner.me', 'www.willwagner.me']
 
 
 # Application definition
