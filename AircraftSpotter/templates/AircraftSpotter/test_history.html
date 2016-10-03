@@ -20,9 +20,9 @@
         <div class="container">
             {% for row in user_history %}
                 <div class="row">
-                    {% for aircraft in row %}
-                        <div class="col s2">
-                            <img src="{{ aircraft }}" width="75%">
+                    {% for data in row %}
+                        <div class="col s2 {{ data.success }}">
+                            <img src="{{ data.image}}" width="75%">
                         </div>
                     {% endfor %}
                 </div>

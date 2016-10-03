@@ -7,8 +7,16 @@
     {% block content %}
         <div class="left-float-label">
             {% if success %}
-                {{ success }}
+                <div class="row">
+                    <div class="{{ success }}">
+                        <img src="{{ last_aircraft_location }}" class="{{ success }}" style="width:75%; height:80%; display:block; margin-left: 12.5%; margin-top: 10%; margin-bottom: 10%;"/>
+                    </div>
+                <div class="row">
+                    {{ corrected_aircraft }}
+                </div>
             {% endif %}
+
+            </div>
         </div>
         <div style="position: absolute; right: 5%; top:20%">
             <a href="{{ error_url }}">

@@ -94,7 +94,7 @@ class UserHistory(models.Model):
 
     def get_aircraft_history(self):
         # return the plane id for each entry in the user's history
-        return [x[0] for x in self.get_history()]
+        return [x for x in self.get_history()]
 
     @classmethod
     def create(cls, user_id):

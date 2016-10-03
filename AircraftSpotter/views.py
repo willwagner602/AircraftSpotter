@@ -50,16 +50,19 @@ def aircraft_test(request):
 
     if request.method == 'POST':
         # get the plane's id and the guess
-        current_plane = Aircraft.objects.get(image_id=request.POST['aircraft_id'])
-        current_type = current_plane.aircraft
+        guessed_aircraft = Aircraft.objects.get(image_id=request.POST['aircraft_id'])
+        current_type = guessed_aircraft.aircraft
+        user_guess = request.POST['answer']
 
-        success = 'Wrong! That plane was a ' + current_type
+        success = 'Wrong'
 
         # return a message about whether the guess was accurate
-        if current_type == request.POST['answer']:
-            success = "Success!"
+        if current_type == user_guess:
+            success = "Success"
 
         page_vars['success'] = success
+        page_vars['last_aircraft_location'] = static_location(guessed_aircraft)
+        page_vars['corrected_aircraft'] = 'You guessed {}, it was {}'.format(user_guess, current_type)
 
         # for authenticated users, add this aircraft to their history
         if request.user.is_authenticated():
@@ -172,6 +175,7 @@ def convert_image_list_to_rows(user_history, row_length=6):
     image_count = 0
 
     print("Length of user history is ", len(user_history))
+    print(user_history)
 
     for image in user_history:
 
@@ -184,7 +188,6 @@ def convert_image_list_to_rows(user_history, row_length=6):
             image_count = 1
 
     history_in_rows.append(current_row)
-
     return history_in_rows
 
 
@@ -229,9 +232,17 @@ def history(request):
             user_history = UserHistory.objects.get(user_id=request.user.pk).get_aircraft_history()
 
             # transform the plane IDs into the full images to display in the template
-            user_history = [Aircraft.objects.get(pk=image) for image in user_history]
-            user_history = [static_location(image) for image in user_history]
+            for i, data in enumerate(user_history):
+                image_id = data[0]
+                success_status = data[1]
+                print(data, image_id, success_status)
+                user_history[i] = {
+                    "image": static_location(Aircraft.objects.get(pk=image_id)),
+                    "success": success_status[:success_status.find('!')],
+                    "correct_aircraft": success_status[success_status.find('!') + 1:]
+                }
             user_history = convert_image_list_to_rows(user_history)
+            print(user_history)
             page_vars['user_history'] = user_history
 
         except UserHistory.DoesNotExist:

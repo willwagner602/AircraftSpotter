@@ -8,3 +8,17 @@
     left: 5%;
     top:20%;
 }
+
+.Wrong {
+    background: rgba(237 ,42, 42, .7);
+    height: 100%;
+    overflow: hidden;
+    color: #FFFFFF;
+}
+
+.Success {
+    background: rgba(42, 237, 62, .7);
+    height: 100%;
+    overflow: hidden;
+    color: #FFFFFF;
+}
