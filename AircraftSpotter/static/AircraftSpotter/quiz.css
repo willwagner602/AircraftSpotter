@@ -1,0 +1,19 @@
+.last_guess {
+    position: relative;
+    display: inline;
+    max-width: 15%;
+    height:15%;
+}
+
+.success {
+    bottom: 10%;
+    max-width: 100%;
+    position:absolute;
+    opacity: .7;
+}
+
+.last_aircraft {
+    max-width: 100%;
+    bottom-margin: 10%;
+    /*position:absolute;*/
+}

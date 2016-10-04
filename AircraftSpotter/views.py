@@ -8,7 +8,7 @@ from .models import Aircraft, AircraftType, UserHistory
 from .forms import AircraftForm, ErrorForm
 
 
-def static_location(aircraft):
+def aircraft_static_location(aircraft):
     return static('AircraftSpotter/images/' + aircraft.location + '/' + aircraft.name)
 
 
@@ -42,7 +42,7 @@ def aircraft_test(request):
     shuffle(selection_options)
 
     page_vars = {'selections': selection_options,
-                 'location': static_location(plane),
+                 'location': aircraft_static_location(plane),
                  'author': plane.author,
                  'aircraft_id': plane.image_id,
                  'error_url': 'error_report/' + str(plane.image_id)
@@ -54,15 +54,18 @@ def aircraft_test(request):
         current_type = guessed_aircraft.aircraft
         user_guess = request.POST['answer']
 
-        success = 'Wrong'
-
         # return a message about whether the guess was accurate
         if current_type == user_guess:
-            success = "Success"
+            success = "Correct"
+            corrected_guess = ""
+        else:
+            success = 'Wrong'
+            corrected_guess = 'You guessed {}, it was {}'.format(user_guess, current_type)
 
         page_vars['success'] = success
-        page_vars['last_aircraft_location'] = static_location(guessed_aircraft)
-        page_vars['corrected_aircraft'] = 'You guessed {}, it was {}'.format(user_guess, current_type)
+        page_vars['last_aircraft_location'] = aircraft_static_location(guessed_aircraft)
+        page_vars['corrected_aircraft'] = corrected_guess
+        page_vars['success_image_overlay'] = static("AircraftSpotter/{}.png".format(success))
 
         # for authenticated users, add this aircraft to their history
         if request.user.is_authenticated():
@@ -72,7 +75,7 @@ def aircraft_test(request):
                 user_history = UserHistory.create(request.user.pk)
                 user_history.save()
 
-            user_history.add_history(plane.pk, success)
+            user_history.add_history(plane.pk, success + "!" + corrected_guess)
 
     return render(request, 'AircraftSpotter/aircraft_spotter.html', page_vars)
 
@@ -158,7 +161,7 @@ def aircraft_data(request, current_image_id):
 
     current_aircraft_data = aircraft.data()
     page_vars['aircraft_data'] = current_aircraft_data
-    page_vars['location'] = static_location(aircraft)
+    page_vars['location'] = aircraft_static_location(aircraft)
 
     if current_aircraft_data['use_flag'] == 1:
         use_flag = True
@@ -210,7 +213,7 @@ def data_manager(request):
                 # create a list of dicts with the link to the data page and the image together in an entry
                 for entry in aircraft:
                     aircraft_list.append({'data_link': '/data/' + str(entry.image_id),
-                                          'image': static_location(entry),
+                                          'image': aircraft_static_location(entry),
                                           'author': entry.author})
 
                 page_vars['aircraft_images'] = convert_image_list_to_rows(aircraft_list[:180])
@@ -237,7 +240,7 @@ def history(request):
                 success_status = data[1]
                 print(data, image_id, success_status)
                 user_history[i] = {
-                    "image": static_location(Aircraft.objects.get(pk=image_id)),
+                    "image": aircraft_static_location(Aircraft.objects.get(pk=image_id)),
                     "success": success_status[:success_status.find('!')],
                     "correct_aircraft": success_status[success_status.find('!') + 1:]
                 }

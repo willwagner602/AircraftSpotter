@@ -5,11 +5,22 @@
     {% endblock %}
 
     {% block content %}
+        {% load staticfiles %}
+        <link type="text/css" rel="stylesheet" href="{% static "AircraftSpotter/quiz.css" %}"/>
+        <script type="text/javascript">
+            document.addEventListener("DOMContentLoaded", function(event){
+                var lastAircraftImage = document.getElementsByClassName("last_aircraft")[0];
+                var successImage = document.getElementsByClassName("success")[0];
+                successImage.width = lastAircraftImage.width;
+                console.log(lastAircraftImage, successImage);
+            })
+        </script>
         <div class="left-float-label">
             {% if success %}
                 <div class="row">
-                    <div class="{{ success }}">
-                        <img src="{{ last_aircraft_location }}" class="{{ success }}" style="width:75%; height:80%; display:block; margin-left: 12.5%; margin-top: 10%; margin-bottom: 10%;"/>
+                    <div class="last_guess">
+                        <img src="{{ last_aircraft_location }}" class="last_aircraft"/>
+                        <img src="{{ success_image_overlay }}" class="success">
                     </div>
                 <div class="row">
                     {{ corrected_aircraft }}
