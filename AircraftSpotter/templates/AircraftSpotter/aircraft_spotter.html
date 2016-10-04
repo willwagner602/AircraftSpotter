@@ -11,7 +11,10 @@
             document.addEventListener("DOMContentLoaded", function(event){
                 var lastAircraftImage = document.getElementsByClassName("last_aircraft")[0];
                 var successImage = document.getElementsByClassName("success")[0];
-                successImage.width = lastAircraftImage.width;
+                successImage.height = lastAircraftImage.height;
+                console.log(successImage.left);
+                successImage.style.left = ((lastAircraftImage.width - successImage.width) / 2) + 'px';
+                console.log(((lastAircraftImage.width - successImage.width) / 2) + 'px');
                 console.log(lastAircraftImage, successImage);
             })
         </script>

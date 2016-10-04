@@ -3,10 +3,11 @@
     display: inline;
     max-width: 15%;
     height:15%;
+    max-height: 10%;
 }
 
 .success {
-    bottom: 10%;
+    bottom: 15%;
     max-width: 100%;
     position:absolute;
     opacity: .7;
@@ -15,5 +16,4 @@
 .last_aircraft {
     max-width: 100%;
     bottom-margin: 10%;
-    /*position:absolute;*/
 }
