@@ -25,7 +25,7 @@ def create_user(request):
             print(request.__dict__)
             return render(request, 'registration/create_user.html', {'error': 'This username is not valid'})
 
-        return redirect('/AircraftSpotter/user/login', success = 'User created successfully!', username = user.username)
+        return redirect('/user/login', success = 'User created successfully!', username = user.username)
 
     else:
         return render(request, 'registration/create_user.html', {})
@@ -33,14 +33,14 @@ def create_user(request):
 
 def login_user(request):
     if request.user.is_authenticated:
-        return redirect('/AircraftSpotter/')
+        return redirect('/')
     elif request.method == 'POST':
         username = request.POST['username']
         password = request.POST['password']
         user = authenticate(username=username, password=password)
         if user is not None:
             login(request, user)
-            return redirect('/AircraftSpotter/aircraft_spotter.html')
+            return redirect('/')
         else:
             return render(request, 'registration/login.html', {'display':'user does not exist'})
     else:
@@ -49,4 +49,4 @@ def login_user(request):
 
 def logout_user(request):
     logout(request)
-    return redirect('/AircraftSpotter/')
+    return redirect('/')
