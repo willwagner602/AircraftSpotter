@@ -4,6 +4,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import logout, login, authenticate
 from django.contrib.auth.models import User
 from django.db import IntegrityError
+from AircraftSpotter.views import aircraft_test
 
 
 def create_user(request):
@@ -25,7 +26,7 @@ def create_user(request):
             print(request.__dict__)
             return render(request, 'registration/create_user.html', {'error': 'This username is not valid'})
 
-        return redirect('/user/login', success = 'User created successfully!', username = user.username)
+        return redirect(login_user, success = 'User created successfully!', username = user.username)
 
     else:
         return render(request, 'registration/create_user.html', {})
@@ -33,7 +34,7 @@ def create_user(request):
 
 def login_user(request):
     if request.user.is_authenticated:
-        return redirect('/')
+        return redirect(aircraft_test)
     elif request.method == 'POST':
         username = request.POST['username']
         password = request.POST['password']
@@ -49,4 +50,4 @@ def login_user(request):
 
 def logout_user(request):
     logout(request)
-    return redirect('/')
+    return redirect(aircraft_test)
