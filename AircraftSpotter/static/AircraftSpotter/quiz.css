@@ -17,3 +17,19 @@
     max-width: 100%;
     bottom-margin: 10%;
 }
+
+.mobile {
+    display:none;
+}
+
+@media (max-device-width: 480px) {
+    .mobile {
+        display:block;
+    }
+    .fullscreen {
+        display: none;
+    }
+    #answer_label {
+        font-size:3vw;
+    }
+}
